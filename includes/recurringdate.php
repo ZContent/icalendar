@@ -546,7 +546,7 @@ class ZCalendarRecurringDate {
 				$done = true;
 			}
 			$loopcount++;
-			if($loopcount > 5000){
+			if($loopcount > _ZAPCAL_MAXYEAR){
 				$done = true;
 				throw new Exception("Infinite loop detected in getDates()");
 			}
