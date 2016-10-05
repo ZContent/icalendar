@@ -1,6 +1,6 @@
-# iCalendar
+# Zap Calendar iCalendar Library
 
-The Zap Calendar Library is a PHP library for supporting the iCalendar (RFC 5545) standard.
+The Zap Calendar iCalendar Library is a PHP library for supporting the iCalendar (RFC 5545) standard.
 
 This PHP library is for reading and writing iCalendar formatted feeds and 
 files. Features of the library include:
@@ -59,7 +59,8 @@ size of the iCalendar data is limited to the amount of memory on the machine.
 The ZCiCal() object supports reading a range of events to minimize memory
 needs.
 - The library ignores timezone info when importing files, instead utilizing PHP's timezone
-library for calculations (timezones are supported when exporting files). Imported timezones need to be aliased to a (PHP supported timezone)[http://php.net/manual/en/timezones.php].
+library for calculations (timezones are supported when exporting files).
+Imported timezones need to be aliased to a [PHP supported timezone](http://php.net/manual/en/timezones.php).
 - At this time, the library does not support the "BYSETPOS" option in RRULE items.
 - At this time, the maximum date supported is 2036 to avoid date math issues
 with 32 bit systems.
