@@ -1,5 +1,7 @@
 # Zap Calendar iCalendar Library
 
+(https://github.com/zcontent/icalendar)
+
 The Zap Calendar iCalendar Library is a PHP library for supporting the iCalendar (RFC 5545) standard.
 
 This PHP library is for reading and writing iCalendar formatted feeds and 
@@ -44,7 +46,7 @@ $datanode = new ZCiCalDataNode("DTSTART:" . ZCiCal::fromSqlDateTime("2020-01-01 
 $eventobj->data["DTSTART"] = $datanode;
 
 // add end date
-$datanode = new ZCiCalDataNode("DTEND:" . ZCiCal::fromSqlDateTime("2020-01-01 12:00:00"));
+$datanode = new ZCiCalDataNode("DTEND:" . ZCiCal::fromSqlDateTime("2020-01-01 13:00:00"));
 $eventobj->data["DTEND"] = $datanode;
 ```
 
