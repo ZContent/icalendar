@@ -71,7 +71,7 @@ $icalobj = new ZCiCal($icalstring);
 - Since the library utilizes objects to read and write iCalendar data, the 
 size of the iCalendar data is limited to the amount of memory on the machine.
 The ZCiCal() object supports reading a range of events to minimize memory
-needs.
+space.
 - The library ignores timezone info when importing files, instead utilizing PHP's timezone
 library for calculations (timezones are supported when exporting files).
 Imported timezones need to be aliased to a [PHP supported timezone](http://php.net/manual/en/timezones.php).
