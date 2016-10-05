@@ -36,6 +36,18 @@ Add an event object:
 $eventobj = new ZCiCalNode("VEVENT", $icalobj->curnode);
 ```
 
+Add a start and end date to the event:
+
+```php
+// add start date
+$datanode = new ZCiCalDataNode("DTSTART:" . ZCiCal::fromSqlDateTime("2020-01-01 12:00:00"));
+$eventobj->data["DTSTART"] = $datanode;
+
+// add end date
+$datanode = new ZCiCalDataNode("DTEND:" . ZCiCal::fromSqlDateTime("2020-01-01 12:00:00"));
+$eventobj->data["DTEND"] = $datanode;
+```
+
 Write the object in iCalendar format using the  export() function call:
 
 ```php
