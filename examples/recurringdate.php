@@ -1,13 +1,13 @@
 <?php
 
-require_once("../zapcallib.php");
-
 /**
  * Recurring Date Example
  *
  * Recurring date examples with RRULE property
  *
  */
+
+require_once("../zapcallib.php");
 
 $examples = 
 array(

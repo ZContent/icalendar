@@ -1,11 +1,11 @@
 <?php
 
-require_once("../zapcallib.php");
-
 /**
  * Create Event Example With Local Timezone
  *
  */
+
+require_once("../zapcallib.php");
 
 $title = "Event in New York timezone";
 // date/time is in SQL datetime format
@@ -42,5 +42,6 @@ $eventobj->addNode(new ZCiCalDataNode("UID:" . $uid));
 // DTSTAMP is a required item in VEVENT
 $eventobj->addNode(new ZCiCalDataNode("DTSTAMP:" . ZCiCal::fromSqlDateTime()));
 
+// write iCalendar feed to stdout
 echo $icalobj->export();
 

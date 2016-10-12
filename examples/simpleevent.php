@@ -1,7 +1,5 @@
 <?php
 
-require_once("../zapcallib.php");
-
 /**
  * Simple Event Example
  *
@@ -9,6 +7,8 @@ require_once("../zapcallib.php");
  * No time zone specified, so this event will be in UTC time zone
  *
  */
+
+require_once("../zapcallib.php");
 
 $title = "Simple Event";
 // date/time is in SQL datetime format
@@ -43,6 +43,6 @@ $eventobj->addNode(new ZCiCalDataNode("Description:" . ZCiCal::formatContent(
 	"This is a simple event, using the Zap Calendar PHP library. " .
 	"Visit http://icalendar.org to validate icalendar files.")));
 
-// write iCalendar feed
+// write iCalendar feed to stdout
 echo $icalobj->export();
 

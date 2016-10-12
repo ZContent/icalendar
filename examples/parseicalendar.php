@@ -1,7 +1,5 @@
 <?php
 
-require_once("../zapcallib.php");
-
 /**
  * Parse iCalendar Example
  *
@@ -11,6 +9,8 @@ require_once("../zapcallib.php");
  * or leave blank to parse the default file.
  *
  */
+
+require_once("../zapcallib.php");
 
 $icalfile = count($argv) > 1 ? $argv[1] : "abrahamlincoln.ics";
 $icalfeed = file_get_contents($icalfile);
