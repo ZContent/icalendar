@@ -42,12 +42,10 @@ Add a start and end date to the event:
 
 ```php
 // add start date
-$datanode = new ZCiCalDataNode("DTSTART:" . ZCiCal::fromSqlDateTime("2020-01-01 12:00:00"));
-$eventobj->data["DTSTART"] = $datanode;
+$eventobj->addNode(new ZCiCalDataNode("DTSTART:" . ZCiCal::fromSqlDateTime("2020-01-01 12:00:00")));
 
 // add end date
-$datanode = new ZCiCalDataNode("DTEND:" . ZCiCal::fromSqlDateTime("2020-01-01 13:00:00"));
-$eventobj->data["DTEND"] = $datanode;
+$eventobj->addNode(new ZCiCalDataNode("DTEND:" . ZCiCal::fromSqlDateTime("2020-01-01 13:00:00")));
 ```
 
 Write the object in iCalendar format using the  export() function call:
@@ -69,7 +67,7 @@ $icalobj = new ZCiCal($icalstring);
 ## Known Limitations
 
 - Since the library utilizes objects to read and write iCalendar data, the 
-size of the iCalendar data is limited to the amount of memory on the machine.
+size of the iCalendar data is limited to the amount of available memory on the machine.
 The ZCiCal() object supports reading a range of events to minimize memory
 space.
 - The library ignores timezone info when importing files, instead utilizing PHP's timezone

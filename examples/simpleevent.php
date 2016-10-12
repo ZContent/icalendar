@@ -23,32 +23,27 @@ $icalobj = new ZCiCal();
 $eventobj = new ZCiCalNode("VEVENT", $icalobj->curnode);
 
 // add title
-$datanode = new ZCiCalDataNode("SUMMARY:" . $title);
-$eventobj->data[$datanode->getName()] = $datanode;
+$eventobj->addNode(new ZCiCalDataNode("SUMMARY:" . $title));
 
 // add start date
-$datanode = new ZCiCalDataNode("DTSTART:" . ZCiCal::fromSqlDateTime($event_start));
-$eventobj->data[$datanode->getName()] = $datanode;
+$eventobj->addNode(new ZCiCalDataNode("DTSTART:" . ZCiCal::fromSqlDateTime($event_start)));
 
 // add end date
-$datanode = new ZCiCalDataNode("DTEND:" . ZCiCal::fromSqlDateTime($event_end));
-$eventobj->data[$datanode->getName()] = $datanode;
+$eventobj->addNode(new ZCiCalDataNode("DTEND:" . ZCiCal::fromSqlDateTime($event_end)));
 
 // UID is a required item in VEVENT, create unique string for this event
 // Adding your domain to the end is a good way of creating uniqueness
 $uid = date('Y-m-d-H-i-s') . "@demo.icalendar.org";
-$datanode = new ZCiCalDataNode("UID:" . $uid);
-$eventobj->data[$datanode->getName()] = $datanode;
+$eventobj->addNode(new ZCiCalDataNode("UID:" . $uid));
 
 // DTSTAMP is a required item in VEVENT
 $datanode = new ZCiCalDataNode("DTSTAMP:" . ZCiCal::fromSqlDateTime());
-$eventobj->data[$datanode->getName()] = $datanode;
+$eventobj->addNode(new ZCiCalDataNode("DTSTAMP:" . ZCiCal::fromSqlDateTime()));
 
 // Add description
-$datanode = new ZCiCalDataNode("Description:" . ZCiCal::formatContent(
+$eventobj->addNode(new ZCiCalDataNode("Description:" . ZCiCal::formatContent(
 	"This is a simple event, using the Zap Calendar PHP library. " .
-	"Visit http://icalendar.org to validate icalendar files."));
-$eventobj->data[$datanode->getName()] = $datanode;
+	"Visit http://icalendar.org to validate icalendar files.")));
 
 // write iCalendar feed
 echo $icalobj->export();

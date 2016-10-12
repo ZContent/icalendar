@@ -1,7 +1,7 @@
 <?php	
 
 /**
- * @package	 Zap Calendar Time Zone Helper Class
+ * Zap Calendar Time Zone Helper Class
  *
  * @copyright   Copyright (C) 2006 - 2016 by Dan Cogliano
  * @license	 GNU General Public License version 2 or later; see LICENSE.txt
@@ -10,8 +10,25 @@
 // No direct access
 defined('_ZAPCAL') or die( 'Restricted access' );
 
+/**
+ * Class to help create timezone section of iCalendar file
+ *
+ */
 class ZCTimeZoneHelper {
 
+	/**
+	 * getTZNode creates VTIMEZONE section in an iCalendar file
+	 *
+	 * @param @startyear int start year of date range
+	 *
+	 * @param @endyear int end year of date range
+	 *
+	 * @param $tzid string PHP timezone, use underscore for multiple words (i.e. "New_York" for "New York")
+	 *
+	 * @param $parentnode object iCalendar object where VTIMEZONE will be created
+	 *
+	 * @return object return VTIMEZONE object
+	 */
 	static function getTZNode($startyear, $endyear, $tzid, $parentnode)
 	{
 		$tzmins = array();

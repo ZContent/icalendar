@@ -30,7 +30,7 @@ $maxdate = strtotime("2021-01-01");
 foreach($examples as $example)
 {
 	echo $example["name"] . ":\n";
-	$rd = new ZCalendarRecurringDate($example["rule"],strtotime($example["date"]));
+	$rd = new ZCRecurringDate($example["rule"],strtotime($example["date"]));
 	$dates = $rd->getDates($maxdate);
 	foreach($dates as $d)
 	{

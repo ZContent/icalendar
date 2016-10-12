@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package	 Zap Calendar Date Helper Class
+ * Zap Calendar Date Helper Class
  *
  * @copyright   Copyright (C) 2006 - 2016 by Dan Cogliano
  * @license	 GNU General Public License version 2 or later; see LICENSE.txt
@@ -10,12 +10,19 @@
 // No direct access
 defined('_ZAPCAL') or die( 'Restricted access' );
 
+/**
+ * Helper class for various date functions
+ */
 class ZDateHelper {
 
-	/*
+	/**
 	 * Find the number of days in a month
-	 * Year is between 1 and 32767 inclusive
-	 * Month is between 1 and 12 inclusive
+	 *
+	 * @param int $month Month is between 1 and 12 inclusive
+	 *
+	 * @param int $year is between 1 and 32767 inclusive
+	 *
+	 * @return int 
 	 */
 	static function DayInMonth($month, $year) {
 	   $daysInMonth = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
@@ -23,6 +30,15 @@ class ZDateHelper {
 	   return (checkdate($month, 29, $year)) ? 29 : 28;
 	}
 
+	/**
+	 * Is given date today?
+	 *
+	 * @param int $date date in Unix timestamp format
+	 *
+	 * @param int $tzid PHP recognized timezone (default is UTC)
+	 *
+	 * @return bool
+	 */
 	static function isToday($date, $tzid = "UTC") {
 		$dtz = new DateTimeZone($tzid);
 		$dt = new DateTime("now", $dtz);
@@ -30,6 +46,15 @@ class ZDateHelper {
 		return gmdate('Y-m-d', $date) == gmdate('Y-m-d', $now);
 	}
 
+	/**
+	 * Is given date before today?
+	 *
+	 * @param int $date date in Unix timestamp format
+	 *
+	 * @param int $tzid PHP recognized timezone (default is UTC)
+	 *
+	 * @return bool
+	 */
 	static function isBeforeToday($date, $tzid = "UTC"){
 		$dtz = new DateTimeZone($tzid);
 		$dt = new DateTime("now", $dtz);
@@ -38,6 +63,15 @@ class ZDateHelper {
 			mktime(0,0,0,date('m',$date),date('d',$date),date('Y',$now));
 	}
 
+	/**
+	 * Is given date after today?
+	 *
+	 * @param int $date date in Unix timestamp format
+	 *
+	 * @param int $tzid PHP recognized timezone (default is UTC)
+	 *
+	 * @return bool
+	 */
 	static function isAfterToday($date, $tzid = "UTC"){
 		$dtz = new DateTimeZone($tzid);
 		$dt = new DateTime("now", $dtz);
@@ -46,6 +80,15 @@ class ZDateHelper {
 			mktime(0,0,0,date('m',$date),date('d',$date),date('Y',$now));
 	}
 
+	/**
+	 * Is given date tomorrow?
+	 *
+	 * @param int $date date in Unix timestamp format
+	 *
+	 * @param int $tzid PHP recognized timezone (default is UTC)
+	 *
+	 * @return bool
+	 */
 	static function isTomorrow($date, $tzid = "UTC") {
 		$dtz = new DateTimeZone($tzid);
 		$dt = new DateTime("now", $dtz);
@@ -53,6 +96,18 @@ class ZDateHelper {
 		return gmdate('Y-m-d', $date) == gmdate('Y-m-d', $now + 60 * 60 * 24);
 	}
 
+	/**
+	 * Is given date in the future?
+	 *
+	 * This routine differs from isAfterToday() in that isFuture() will
+	 * return true for date-time values later in the same day.
+	 *
+	 * @param int $date date in Unix timestamp format
+	 *
+	 * @param int $tzid PHP recognized timezone (default is UTC)
+	 *
+	 * @return bool
+	 */
 	static function isFuture($date, $tzid = "UTC"){
 		$dtz = new DateTimeZone($tzid);
 		$dt = new DateTime("now", $dtz);
@@ -60,6 +115,18 @@ class ZDateHelper {
 		return $date > $now;
 	}
 
+	/**
+	 * Is given date in the past?
+	 *
+	 * This routine differs from isBeforeToday() in that isPast() will
+	 * return true for date-time values earlier in the same day.
+	 *
+	 * @param int $date date in Unix timestamp format
+	 *
+	 * @param int $tzid PHP recognized timezone (default is UTC)
+	 *
+	 * @return bool
+	 */
 	static function isPast($date, $tzid = "UTC") {
 		$dtz = new DateTimeZone($tzid);
 		$dt = new DateTime("now", $dtz);
@@ -67,6 +134,13 @@ class ZDateHelper {
 		return $date < $now;
 	}
 
+	/**
+	 * Return current Unix timestamp in local timezone
+	 *
+	 * @param string $tzid PHP recognized timezone
+	 *
+	 * @return int
+	 */
 	static function now($tzid = "UTC"){
 		$dtz = new DateTimeZone($tzid);
 		$dt = new DateTime("now", $dtz);
@@ -74,11 +148,25 @@ class ZDateHelper {
 		return $now;
 	}
 
+	/**
+	 * Is given date fall on a weekend?
+	 *
+	 * @param int $date Unix timestamp
+	 *
+	 * @return bool
+	 */
 	static function isWeekend($date) {
 		$dow = gmdate('w',$date);
 		return $dow == 0 || $dow == 6;
 	}
 
+	/**
+	 * Format Unix timestamp to SQL date-time
+	 *
+	 * @param int $t Unix timestamp
+	 *
+	 * @return string
+	 */
 	static function toSqlDateTime($t = 0)
 	{
 		date_default_timezone_set('GMT');
@@ -87,6 +175,13 @@ class ZDateHelper {
 		return gmdate('Y-m-d H:i:s', $t);
 	}
 
+	/**
+	 * Format Unix timestamp to SQL date
+	 *
+	 * @param int $t Unix timestamp
+	 *
+	 * @return string
+	 */
 	static function toSqlDate($t = 0)
 	{
 		date_default_timezone_set('GMT');
@@ -95,7 +190,13 @@ class ZDateHelper {
 		return gmdate('Y-m-d', $t);
 	}
 
-	// $datetime is in iCal time format( YYYYMMDD or YYYYMMDDTHHMMSS or YYYYMMDDTHHMMSSZ )
+	/**
+	 * Format iCal date-time string to Unix timestamp
+	 *
+	 * @param string $datetime in iCal time format ( YYYYMMDD or YYYYMMDDTHHMMSS or YYYYMMDDTHHMMSSZ )
+	 * 
+	 * @return int Unix timestamp
+	 */
 	static function fromiCaltoUnixDateTime($datetime) {
 			// first check format
 			$formats = array();
@@ -125,12 +226,25 @@ class ZDateHelper {
 			return gmmktime($hour, $minute, $second, $month, $day, $year);
 	}
 
+	/**
+	 * Format Unix timestamp to iCal date-time string
+	 *
+	 * @param int $datetime Unix timestamp
+	 *
+	 * @return string
+	 */
 	static function fromUnixDateTimetoiCal($datetime){
 		date_default_timezone_set('GMT');
 		return gmdate("Ymd\THis",$datetime);
 	}
 
-	// convert iCal duration string to # of seconds
+	/**
+	 * Convert iCal duration string to # of seconds
+	 * 
+	 * @param string $duration iCal duration string
+	 *
+	 * return int 
+	 */
 	static function iCalDurationtoSeconds($duration) {
 		$secs = 0;
 		if($duration{0} == "P") {
@@ -162,7 +276,17 @@ class ZDateHelper {
 		return $secs;
 	}
 
-	// see if date range (begin-end) falls on day
+	/**
+	 * Check if day falls within date range
+	 *
+	 * @param int $daystart start of day in Unix timestamp format
+	 *
+	 * @param int $begin Unix timestamp of starting date range
+	 *
+	 * @param int $end Unix timestamp of end date range
+	 *
+	 * @return bool
+	 */
 	static function inDay($daystart, $begin, $end)
 	{
 		//$dayend = $daystart + 60*60*24 - 60;
@@ -180,55 +304,15 @@ class ZDateHelper {
 		return $inday;
 	}
 
-	// see if event falls in date range 
-	// event: event object
-	// begin, end: range in Unix timestamp format (UTC)
-	// tzid: timezone of calendar, or null (will use event if not specified)
-	static function inRange($event, $begin, $end, $tzid = null)
-	{
-		$eventstart = self::toUnixDateTime($event->event_start);
-		$eventend = self::toUnixDateTime($event->event_end);
-		/*
-		echo "inRange(" .
-			self::toSQLDateTime($eventstart) . " - " .
-			self::toSQLDateTime($eventend) . ", " .
-			self::toSQLDateTime($begin) . ", " .
-			self::toSQLDateTime($end) . ", $tzid)<br/>\n";
-		*/
-		if(empty($tzid))
-			$tzid = $event->tzid;
-		if($event->event_type == 1)
-			$tzid = ""; // no timezone for all day events
-
-		$end = max($begin, $end); // $end can't be less than $begin
-
-		if($event->event_type == 2)
-		{
-			// convert meetings to local time zone
-			$eventstart = self::toUnixDateTime(self::toLocalDateTime($event->event_start,$tzid));
-			$eventend = self::toUnixDateTime(self::toLocalDateTime($event->event_end,$tzid));
- 		}
-		/*
-		$inrange = 
-			($eventstart <= $begin && $begin < $eventend)
-			||($eventstart < $end && $end <= $eventend)
-			||($begin <= $eventstart && $end > $eventend)
-			;
-		*/
-		$inrange = 
-			($eventstart <= $begin && $begin < $eventend)
-			||($eventstart < $end && $end <= $eventend)
-			||($eventstart <= $begin && $end <= $eventend)
-			||($begin <= $eventstart && $end > $eventend)
-			;
-		//echo "inRange() returns " . ($inrange? "true" : "false") . "<br/>\n";
-		return $inrange;
-	}
-
-	// $datetime is in SQL date or date/time format
+	/**
+	 * Convert SQL date or date-time to Unix timestamp
+	 *
+	 * @param string $datetime SQL date or date-time
+	 *
+	 * @return int Unix date-time timestamp
+	 */
 	static function toUnixDate($datetime)
 	{
-			$datetime = self::convertDate($datetime);
 			$year = substr($datetime,0,4);
 			$month = substr($datetime,5,2);
 			$day = substr($datetime,8,2);
@@ -236,11 +320,16 @@ class ZDateHelper {
 			return mktime(0, 0, 0, $month, $day, $year);
 	}
 
-	// $datetime is in SQL date format
+	/**
+	 * Convert SQL date or date-time to Unix date timestamp
+	 *
+	 * @param string $datetime SQL date or date-time
+	 *
+	 * @return int Unix timestamp
+	 */
 	static function toUnixDateTime($datetime)
 	{
 		// convert to absolute dates if neccessary
-		//$datetime = self::convertDate(self::getAbsDate($datetime));
 		$datetime = self::getAbsDate($datetime);
 		$year = substr($datetime,0,4);
 		$month = substr($datetime,5,2);
@@ -256,14 +345,27 @@ class ZDateHelper {
 		return gmmktime($hour, $minute, $second, $month, $day, $year);
 	}
 
-	//date math: add to current date to get new date
+	/**
+	 * Date math: add or substract from current date to get a new date
+	 *
+	 * @param int $date date to add or subtract from
+	 *
+	 * @param int $hour add or subtract hours from date
+	 *
+	 * @param int $min add or subtract minutes from date
+	 * 
+	 * @param int $sec add or subtract seconds from date
+	 * 
+	 * @param int $month add or subtract months from date
+	 * 
+	 * @param int $day add or subtract days from date
+	 * 
+	 * @param int $year add or subtract years from date
+	 *
+	 * @param string $tzid PHP recognized timezone (default is UTC)
+	 */
 	static function addDate($date, $hour, $min, $sec, $month, $day, $year, $tzid = "UTC") {
-		if($tzid == -1) // old param
-			$tzid = "UTC";
 		date_default_timezone_set($tzid);
-		//date_default_timezone_set("UTC");
-		//$tdate=getdate($date);
-		//print_r($tdate);
 		$sqldate = self::toSQLDateTime($date);
 		$tdate = array();
 		$tdate["year"] = substr($sqldate,0,4);
@@ -278,12 +380,23 @@ class ZDateHelper {
 		return $newdate;
 	}
 
-	// date math: get date from week and day in specified month, i.e. second Tuesday, last Friday
-	// params:
-	// date - Unix datetime
-	// week - week number, 0 is first , -1 is last
-	// wday - day of week, like Unix, 0 is Sunday .. 6 is Saturday
-	// second Tuesday is 1,2 , last Friday is -1,5
+	/**
+	 * Date math: get date from week and day in specifiec month
+	 *
+	 * This routine finds actual dates for the second Tuesday of the month, last Friday of the month, etc.
+	 * For second Tuesday, use $week = 1, $wday = 2
+	 * for last Friday, use $week = -1, $wday = 5
+	 *
+	 * @param int $date Unix timestamp
+	 *
+	 * @param int $week week number, 0 is first week, -1 is last
+	 *
+	 * @param int $wday day of week, 0 is Sunday, 6 is Saturday
+	 *
+	 * @param string $tzid PHP supported timezone
+	 *
+	 * @return int Unix timestamp
+	 */
 	static function getDateFromDay($date, $week, $wday,$tzid="UTC") {
 		//echo "getDateFromDay(" . self::toSqlDateTime($date) . ",$week,$wday)<br/>\n";
 		// determine first day in month
@@ -308,7 +421,15 @@ class ZDateHelper {
 		return $dayinmonth;
 	}
 
-	// convert UTC date/time to local/date time using PHP's DateTime class (new in PHP 5.3)
+	/**
+	 * Convert UTC date-time to local date-time
+	 * 
+	 * @param string $sqldate SQL date-time string
+	 *
+	 * @param string $tzid PHP recognized timezone (default is "UTC")
+	 *
+	 * @return string SQL date-time string
+	 */
 	static function toLocalDateTime($sqldate, $tzid = "UTC" ){
 		try
 		{
@@ -325,7 +446,15 @@ class ZDateHelper {
 		return self::toSqlDateTime($udate + $tzoffset);
 	}
 
-	// convert local date/time to UTC date time using PHP's DateTime class (new in PHP 5.3)
+	/**
+	 * Convert local date-time to UTC date-time
+	 * 
+	 * @param string $sqldate SQL date-time string
+	 *
+	 * @param string $tzid PHP recognized timezone (default is "UTC")
+	 *
+	 * @return string SQL date-time string
+	 */
 	static function toUTCDateTime($sqldate, $tzid = "UTC" ){
 
 		date_default_timezone_set("UTC");
@@ -346,11 +475,20 @@ class ZDateHelper {
 		return $date->toSql(true);
 	}
 
-	// return date, convert to absolute date if a relative date
-	// absolute date is in the format yyyy-mm-dd
-	// relative date uses y, m or d ("-2y": 2 years ago, "18m": 18 months after today, etc.)
-	// relative date can include combined, comma separated values, i.e. "-1y,-1d" for 1 year and 1 day ago
-	// date relative to current date or $rdate if specified
+	/**
+	 * Convert from a relative date to an absolute date
+	 *
+	 * Examples of relative dates are "-2y" for 2 years ago, "18m"
+	 * for 18 months after today. Relative date uses "y", "m" and "d" for
+	 * year, month and day. Relative date can be combined into comma 
+	 * separated list, i.e., "-1y,-1d" for 1 year and 1 day ago.
+	 *
+	 * @param string $date relative date string (i.e. "1y" for 1 year from today)
+	 *
+	 * @param string $rdate reference date, or blank for current date (in SQL date-time format)
+	 *
+	 * @return string in SQL date-time format
+	 */
 	static function getAbsDate($date,$rdate = ""){
 		if(str_replace(array("y","m","d","h","n"),"",strtolower($date)) != strtolower($date)){
 			date_default_timezone_set("UTC");
@@ -390,14 +528,19 @@ class ZDateHelper {
 				else
 					$udate = mktime(0,-1,0,date('m',$udate),date('d',$udate)+1,date('Y',$udate));
 				$udate = self::addDate($udate,$h,$n,0,$m,$d,$y);
-				//$date = self::toSqlDate(self::addDate(time(),$h,$n,0,$m,$d,$y));
 			}
 			$date = self::toSqlDateTime($udate);
 		}
 		return $date;
 	}
 
-	// format into iCal time format from Unix date/time stamp
+	/**
+	 * Format Unix timestamp to iCal date-time format
+	 *
+	 * @param int $datetime Unix timestamp
+	 *
+	 * @return string iCal date-time string
+	 */
 	static function toiCalDateTime($datetime = null){
 		date_default_timezone_set('UTC');
 		if($datetime == null)
@@ -405,7 +548,13 @@ class ZDateHelper {
 		return gmdate("Ymd\THis",$datetime);
 	}
 
-	// format into iCal date format from Unix date/time stamp
+	/**
+	 * Format Unix timestamp to iCal date format
+	 *
+	 * @param int $datetime Unix timestamp
+	 *
+	 * @return string iCal date-time string
+	 */
 	static function toiCalDate($datetime = null){
 		date_default_timezone_set('UTC');
 		if($datetime == null)

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package	 Zap Calendar Recurring Date Helper Class
+ * Zap Calendar Recurring Date Helper Class
  *
  * @copyright   Copyright (C) 2006 - 2016 by Dan Cogliano
  * @license	 GNU General Public License version 2 or later; see LICENSE.txt
@@ -10,7 +10,10 @@
 // no direct access
 defined('_ZAPCAL') or die( 'Restricted access' );
 
-class ZCalendarRecurringDate {
+/**
+ * Class to expand recurring rule to a list of dates
+ */
+class ZCRecurringDate {
 	var $rules = "";
 	var $startdate = null;
 	var $nextdate = null;
@@ -46,7 +49,7 @@ class ZCalendarRecurringDate {
 	
 	// $startdate is in local timezone
 	// $exdates  array is in UTC timezone
-	function ZCalendarRecurringDate($rules, $startdate, $exdates = array(),$tzid = "UTC"){
+	function ZCRecurringDate($rules, $startdate, $exdates = array(),$tzid = "UTC"){
 		if(strlen($rules) > 0){
 			//move exdates to event timezone for comparing with event date
 			for($i = 0; $i < count($exdates); $i++)
@@ -207,7 +210,7 @@ class ZCalendarRecurringDate {
 	
 	function error($msg){
 		$this->error = $msg;
-		echo "ZCalendarRecurringDate() error:" . $this->error . "<br />\n";
+		echo "ZCRecurringDate() error:" . $this->error . "<br />\n";
 	}
 	
 	function debug($level, $msg){
@@ -220,7 +223,7 @@ class ZCalendarRecurringDate {
 	}
 	
 	function byYear($startdate, $enddate, &$rdates, $tzid="UTC"){
-		ZCalendarRecurringDate::debug(1,"byYear(" . ZDateHelper::toSqlDateTime($startdate) . ","
+		self::debug(1,"byYear(" . ZDateHelper::toSqlDateTime($startdate) . ","
 			. ZDateHelper::toSqlDateTime($enddate) . "," . count($rdates) . " dates)");
 		$count = 0;
 		if(count($this->byyear) > 0){
@@ -238,12 +241,12 @@ class ZCalendarRecurringDate {
 		}
 		else if(!$this->maxDates($rdates))
 			$count = $this->byMonth($startdate, $enddate, $rdates, $tzid);
-		ZCalendarRecurringDate::debug(1,"byYear() returned " . $count );
+		self::debug(1,"byYear() returned " . $count );
 		return $count;
 	}
 	
 	function byMonth($startdate, $enddate, &$rdates, $tzid="UTC"){
-		ZCalendarRecurringDate::debug(1,"byMonth(" . ZDateHelper::toSqlDateTime($startdate) . ","
+		self::debug(1,"byMonth(" . ZDateHelper::toSqlDateTime($startdate) . ","
 			. ZDateHelper::toSqlDateTime($enddate) . "," . count($rdates) . " dates)");
 		$count = 0;
 		if(count($this->bymonth) > 0){
@@ -261,21 +264,21 @@ class ZCalendarRecurringDate {
 		}
 		else if(!$this->maxDates($rdates))
 			$count = $this->byMonthDay($startdate, $enddate, $rdates, $tzid);
-		ZCalendarRecurringDate::debug(1,"byMonth() returned " . $count );
+		self::debug(1,"byMonth() returned " . $count );
 		return $count;
 	}
 	
 	function byMonthDay($startdate, $enddate, &$rdates, $tzid="UTC"){
-		ZCalendarRecurringDate::debug(1,"byMonthDay(" . ZDateHelper::toSqlDateTime($startdate) . ","
+		self::debug(1,"byMonthDay(" . ZDateHelper::toSqlDateTime($startdate) . ","
 			. ZDateHelper::toSqlDateTime($enddate) . "," . count($rdates) . " dates)");
 		$count = 0;
-		ZCalendarRecurringDate::debug(1,"start date: " . ZDateHelper::toSqlDateTime($startdate));
+		self::debug(1,"start date: " . ZDateHelper::toSqlDateTime($startdate));
 		if(count($this->bymonthday) > 0){
 			foreach($this->bymonthday as $day){
 				$day = intval($day);
 				$t = getdate($startdate);
 				$wdate = mktime($t['hours'],$t['minutes'],$t['seconds'],$t['mon'],$day,$t['year']);
-				ZCalendarRecurringDate::debug(2,"mktime(" . $t['hours'] . ", " . $t['minutes']
+				self::debug(2,"mktime(" . $t['hours'] . ", " . $t['minutes']
 				. ", " . $t['mon'] . ", " . $day . ", " . $t['year'] . ") returned $wdate");
 				if($startdate <= $wdate && $wdate < $enddate && !$this->maxDates($rdates)){
 					$count = $this->byDay($wdate, $enddate, $rdates, $tzid);
@@ -287,15 +290,15 @@ class ZCalendarRecurringDate {
 			}
 		}
 		else if(!$this->maxDates($rdates)) {
-			ZCalendarRecurringDate::debug(1,"start date: " . ZDateHelper::toSqlDateTime($startdate));
+			self::debug(1,"start date: " . ZDateHelper::toSqlDateTime($startdate));
 			$count = $this->byDay($startdate, $enddate, $rdates, $tzid);
 		}
-		ZCalendarRecurringDate::debug(1,"byMonthDay() returned " . $count );
+		self::debug(1,"byMonthDay() returned " . $count );
 		return $count;
 	}
 	
 	function byDay($startdate, $enddate, &$rdates, $tzid="UTC"){
-		ZCalendarRecurringDate::debug(1,"byDay(" . ZDateHelper::toSqlDateTime($startdate) . ","
+		self::debug(1,"byDay(" . ZDateHelper::toSqlDateTime($startdate) . ","
 			. ZDateHelper::toSqlDateTime($enddate) . "," . count($rdates) . " dates)");
 		$days = array(
 			"SU" => 0,
@@ -333,10 +336,10 @@ class ZCalendarRecurringDate {
 					$imax = 5; // max # of occurances in a month
 					if(strlen($tday) > 2)
 						$imin = $imax = substr($tday,0,strlen($tday) - 2);
-					ZCalendarRecurringDate::debug(2,"imin: $imin, imax: $imax, tday: $tday, day: $day, daynum: {$days[$day]}");
+					self::debug(2,"imin: $imin, imax: $imax, tday: $tday, day: $day, daynum: {$days[$day]}");
 					for($i = $imin; $i <= $imax; $i++){
 						$wdate = ZDateHelper::getDateFromDay($startdate,$i-1,$days[$day],$tzid);
-						ZCalendarRecurringDate::debug(2,"getDateFromDay(" . ZDateHelper::toSqlDateTime($startdate)
+						self::debug(2,"getDateFromDay(" . ZDateHelper::toSqlDateTime($startdate)
 							. ",$i,{$days[$day]}) returned " . ZDateHelper::toSqlDateTime($wdate));
 						if($startdate <= $wdate && $wdate < $enddate && !$this->maxDates($rdates)){
 							$count = $this->byHour($wdate, $enddate, $rdates);
@@ -352,17 +355,17 @@ class ZCalendarRecurringDate {
 					// day of week version
 					$startdate_dow = date("w",$startdate);
 					$datedelta = $days[$day] - $startdate_dow;
-					ZCalendarRecurringDate::debug(2, "start_dow: $startdate_dow, datedelta: $datedelta");
+					self::debug(2, "start_dow: $startdate_dow, datedelta: $datedelta");
 					if($datedelta >= 0)
 					{
 						$wdate = ZDateHelper::addDate($startdate,0,0,0,0,$datedelta,0,$this->tzid);
-						ZCalendarRecurringDate::debug(2, "wdate: " . ZDateHelper::toSqlDateTime($wdate));
+						self::debug(2, "wdate: " . ZDateHelper::toSqlDateTime($wdate));
 						if($startdate <= $wdate && $wdate < $enddate && !$this->maxDates($rdates)){
 							$count = $this->byHour($wdate, $enddate, $rdates);
 							if($count == 0){
 								$rdates[] = $wdate;
 								$count++;
-								ZCalendarRecurringDate::debug(2,"adding date " . ZDateHelper::toSqlDateTime($wdate) );
+								self::debug(2,"adding date " . ZDateHelper::toSqlDateTime($wdate) );
 							}
 						}
 					}
@@ -371,19 +374,19 @@ class ZCalendarRecurringDate {
 		}
 		else if(!$this->maxDates($rdates))
 			$count = $this->byHour($startdate, $enddate, $rdates);
-		ZCalendarRecurringDate::debug(1,"byDay() returned " . $count );
+		self::debug(1,"byDay() returned " . $count );
 		return $count;
 	}
 	
 	function byHour($startdate, $enddate, &$rdates, $tzid="UTC"){
-		ZCalendarRecurringDate::debug(1,"byHour(" . ZDateHelper::toSqlDateTime($startdate) . ","
+		self::debug(1,"byHour(" . ZDateHelper::toSqlDateTime($startdate) . ","
 			. ZDateHelper::toSqlDateTime($enddate) . "," . count($rdates) . " dates)");
 		$count = 0;
 		if(count($this->byhour) > 0){
 			foreach($this->byhour as $hour){
 				$t = getdate($startdate);
 				$wdate = mktime($hour,$t["minutes"],$t["seconds"],$t["mon"],$t["mday"],$t["year"]);
-				ZCalendarRecurringDate::debug(2,"checking date/time " . ZDateHelper::toSqlDateTime($wdate));
+				self::debug(2,"checking date/time " . ZDateHelper::toSqlDateTime($wdate));
 				if($startdate <= $wdate && $wdate < $enddate && !$this->maxDates($rdates)){
 					$count = $this->byMinute($wdate, $enddate, $rdates);
 					if($count == 0) {
@@ -395,12 +398,12 @@ class ZCalendarRecurringDate {
 		}
 		else if(!$this->maxDates($rdates))
 			$count = $this->byMinute($startdate, $enddate, $rdates);
-		ZCalendarRecurringDate::debug(1,"byHour() returned " . $count );
+		self::debug(1,"byHour() returned " . $count );
 		return $count;
 	}
 	
 	function byMinute($startdate, $enddate, &$rdates, $tzid="UTC"){
-		ZCalendarRecurringDate::debug(1,"byMinute(" . ZDateHelper::toSqlDateTime($startdate) . ","
+		self::debug(1,"byMinute(" . ZDateHelper::toSqlDateTime($startdate) . ","
 			. ZDateHelper::toSqlDateTime($enddate) . "," . count($rdates) . " dates)");
 		$count = 0;
 		if(count($this->byminute) > 0){
@@ -418,12 +421,12 @@ class ZCalendarRecurringDate {
 		}
 		else if(!$this->maxDates($rdates))
 			$count = $this->bySecond($startdate, $enddate, $rdates);
-		ZCalendarRecurringDate::debug(1,"byMinute() returned " . $count );
+		self::debug(1,"byMinute() returned " . $count );
 		return $count;
 	}
 	
 	function bySecond($startdate, $enddate, &$rdates, $tzid="UTC"){
-		ZCalendarRecurringDate::debug(1,"bySecond(" . ZDateHelper::toSqlDateTime($startdate) . ","
+		self::debug(1,"bySecond(" . ZDateHelper::toSqlDateTime($startdate) . ","
 			. ZDateHelper::toSqlDateTime($enddate) . "," . count($rdates) . " dates)");
 		$count = 0;
 		if(count($this->bysecond) > 0){
@@ -436,7 +439,7 @@ class ZCalendarRecurringDate {
 				}
 			}
 		}
-		ZCalendarRecurringDate::debug(1,"bySecond() returned " . $count );
+		self::debug(1,"bySecond() returned " . $count );
 		return $count;
 	}
 	
@@ -451,26 +454,26 @@ class ZCalendarRecurringDate {
 	
 	function getDates($maxdate = null){
 		//$this->debug = 2;
-		ZCalendarRecurringDate::debug(1,"getDates()");
+		self::debug(1,"getDates()");
 		$nextdate = $enddate = $this->startdate;
 		$rdates = array();
 		$done = false;
 		$eventcount = 0;
 		$loopcount = 0;
-		ZCalendarRecurringDate::debug(2,"freq: " . $this->freq . ", interval: " . $this->interval);
+		self::debug(2,"freq: " . $this->freq . ", interval: " . $this->interval);
 		while(!$done){
-			ZCalendarRecurringDate::debug(1,"<b>*** Frequency ({$this->freq}) loop pass $loopcount ***</b>");
+			self::debug(1,"<b>*** Frequency ({$this->freq}) loop pass $loopcount ***</b>");
 			switch($this->freq){
 			case "y":
 				if($eventcount > 0)
 				{
 					$nextdate = ZDateHelper::addDate($nextdate,0,0,0,0,0,$this->interval,$this->tzid);
-					ZCalendarRecurringDate::debug(2,"addDate() returned " . ZDateHelper::toSqlDateTime($nextdate));
+					self::debug(2,"addDate() returned " . ZDateHelper::toSqlDateTime($nextdate));
 					if(!empty($this->byday)){
 						$t = getdate($nextdate);
 						$nextdate = gmmktime($t["hours"],$t["minutes"],$t["seconds"],$t["mon"],1,$t["year"]);
 					}
-					ZCalendarRecurringDate::debug(2,"nextdate set to $nextdate (". ZDateHelper::toSQLDateTime($nextdate) . ")");
+					self::debug(2,"nextdate set to $nextdate (". ZDateHelper::toSQLDateTime($nextdate) . ")");
 				}
 				$enddate=ZDateHelper::addDate($nextdate,0,0,0,0,0,1);
 				break;
@@ -479,7 +482,7 @@ class ZCalendarRecurringDate {
 				{
 					
 					$nextdate = ZDateHelper::addDate($nextdate,0,0,0,$this->interval,0,0,$this->tzid);
-					ZCalendarRecurringDate::debug(2,"addDate() returned " . ZDateHelper::toSqlDateTime($nextdate));
+					self::debug(2,"addDate() returned " . ZDateHelper::toSqlDateTime($nextdate));
 				}
 				if(count($this->byday) > 0)
 				{
@@ -498,7 +501,7 @@ class ZCalendarRecurringDate {
 					$t = getdate($nextdate);
 					$nextdate = mktime($t["hours"],$t["minutes"],$t["seconds"],$t["mon"],1,$t["year"]);
 				}
-				ZCalendarRecurringDate::debug(2,"nextdate set to $nextdate (". ZDateHelper::toSQLDateTime($nextdate) . ")");
+				self::debug(2,"nextdate set to $nextdate (". ZDateHelper::toSQLDateTime($nextdate) . ")");
 				$enddate=ZDateHelper::addDate($nextdate,0,0,0,$this->interval,0,0);
 				break;
 			case "w":
@@ -515,7 +518,7 @@ class ZCalendarRecurringDate {
 							$diff = $diff - 7;
 						$nextdate = ZDateHelper::addDate($nextdate,0,0,0,0,$diff,0);
 					}
-					ZCalendarRecurringDate::debug(2,"nextdate set to $nextdate (". ZDateHelper::toSQLDateTime($nextdate) . ")");
+					self::debug(2,"nextdate set to $nextdate (". ZDateHelper::toSQLDateTime($nextdate) . ")");
 				}
 				$enddate=ZDateHelper::addDate($nextdate,0,0,0,0,$this->interval*7,0);
 				break;
@@ -569,21 +572,21 @@ class ZCalendarRecurringDate {
 				$excount++;
 			}
 		}
-		ZCalendarRecurringDate::debug(1,"getDates() returned " . count($rdates) . " dates, removing $dups duplicates, $excount exceptions");
+		self::debug(1,"getDates() returned " . count($rdates) . " dates, removing $dups duplicates, $excount exceptions");
 	
 	
 		if($this->debug >= 2)
 		{
-			ZCalendarRecurringDate::debug(2,"Recurring Dates:");
+			self::debug(2,"Recurring Dates:");
 			foreach($rdates as $rdate)
 			{
 				$d = getdate($rdate);
-				ZCalendarRecurringDate::debug(2,ZDateHelper::toSQLDateTime($rdate) . " " . $d["wday"] ); 
+				self::debug(2,ZDateHelper::toSQLDateTime($rdate) . " " . $d["wday"] ); 
 			}
-			ZCalendarRecurringDate::debug(2,"Exception Dates:");
+			self::debug(2,"Exception Dates:");
 			foreach($this->exdates as $exdate)
 			{
-				ZCalendarRecurringDate::debug(2, ZDateHelper::toSQLDateTime($exdate));
+				self::debug(2, ZDateHelper::toSQLDateTime($exdate));
 			}
 			//exit;
 		}
