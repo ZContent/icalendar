@@ -2,8 +2,8 @@
 
 require_once("../zapcallib.php");
 
-/*
- * Parse iCalendar
+/**
+ * Parse iCalendar Example
  *
  * Parse an iCalendar file
  *

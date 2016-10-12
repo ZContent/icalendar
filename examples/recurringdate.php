@@ -2,8 +2,8 @@
 
 require_once("../zapcallib.php");
 
-/*
- * Recurring Date
+/**
+ * Recurring Date Example
  *
  * Recurring date examples with RRULE property
  *

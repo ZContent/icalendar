@@ -2,8 +2,8 @@
 
 require_once("../zapcallib.php");
 
-/*
- * Event with local timezone
+/**
+ * Create Event Example With Local Timezone
  *
  */
 

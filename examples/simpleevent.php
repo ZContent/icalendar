@@ -2,11 +2,10 @@
 
 require_once("../zapcallib.php");
 
-/*
- * Simple Event
+/**
+ * Simple Event Example
  *
  * Create a simple iCalendar event
- *
  * No time zone specified, so this event will be in UTC time zone
  *
  */
@@ -37,7 +36,6 @@ $uid = date('Y-m-d-H-i-s') . "@demo.icalendar.org";
 $eventobj->addNode(new ZCiCalDataNode("UID:" . $uid));
 
 // DTSTAMP is a required item in VEVENT
-$datanode = new ZCiCalDataNode("DTSTAMP:" . ZCiCal::fromSqlDateTime());
 $eventobj->addNode(new ZCiCalDataNode("DTSTAMP:" . ZCiCal::fromSqlDateTime()));
 
 // Add description
