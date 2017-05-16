@@ -3,8 +3,6 @@
 /**
  * Parse iCalendar Example
  *
- * Parse an iCalendar file
- *
  * Enter an ics filename or URL on the command line, 
  * or leave blank to parse the default file.
  *

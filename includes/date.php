@@ -460,7 +460,7 @@ class ZDateHelper {
 		date_default_timezone_set("UTC");
 		try
 		{
-			$date = JDate::getInstance($sqldate, $tzid);
+			$date = new DateTime($sqldate, $tzid);
 		}
 		catch(Exception $e)
 		{
