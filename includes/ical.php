@@ -194,11 +194,11 @@ class ZCiCalNode {
 		*/
 	}
 
-/**
- * Return the name of the object
- *
- * @return string
- */
+	/**
+ 	* Return the name of the object
+ 	*
+ 	* @return string
+ 	*/
 	function getName() {
 		return $this->name;
 	}
@@ -210,7 +210,19 @@ class ZCiCalNode {
  	*
  	*/
 	function addNode($node) {
-		$this->data[$node->getName()] = $node;
+		if(array_key_exists($node->getName(), $this->data))
+		{
+			if(!is_array($this->data[$node->getName()]))
+			{
+				$this->data[$node->getName()] = array();
+				$this->data[$node->getName()][] = $node;
+			}
+			$this->data[$node->getName()][] = $node;
+		}
+		else
+		{
+			$this->data[$node->getName()] = $node;
+		}
 	}
 
 	/**
@@ -306,7 +318,26 @@ class ZCiCalNode {
 			throw new Exception("levels nested too deep");
 		}
 		$txtstr .= "BEGIN:" . $node->getName() . "\r\n";
+		if(property_exists($node,"data"))
 		foreach ($node->data as $d){
+			if(is_array($d))
+			{
+				foreach ($d as $c)
+				{
+					//$txtstr .= $node->export($c,$level + 1);
+					$p = "";
+					$params = @$c->getParameters();
+					if(count($params) > 0)
+					{
+						foreach($params as $key => $value){
+							$p .= ";" . strtoupper($key) . "=" . $value;
+						}
+					}
+					$txtstr .= $this->printDataLine($c, $p);
+				}
+			}
+			else
+			{
 			$p = "";
 			$params = @$d->getParameters();
 			if(count($params) > 0)
@@ -315,6 +346,8 @@ class ZCiCalNode {
 					$p .= ";" . strtoupper($key) . "=" . $value;
 				}
 			}
+			$txtstr .= $this->printDataLine($d, $p);
+			/*
 			$values = $d->getValues();
 			// don't think we need this, Sunbird does not like it in the EXDATE field
 			//$values = str_replace(",", "\\,", $values);
@@ -334,8 +367,11 @@ class ZCiCalNode {
 				$linecount += 1;
 				$line = substr($line,$linewidth);
 			}
+			*/
+			}
 			//echo $line . "\n";
 		}
+		if(property_exists($node,"child"))
 		foreach ($node->child as $c){
 			$txtstr .= $node->export($c,$level + 1);
 		}
@@ -343,6 +379,35 @@ class ZCiCalNode {
 		return $txtstr;
 	}
 
+	/**
+ 	* print an attribute line
+ 	*
+	*/
+	function printDataLine($d, $p)
+	{
+		$txtstr = "";
+	
+		$values = $d->getValues();
+		// don't think we need this, Sunbird does not like it in the EXDATE field
+		//$values = str_replace(",", "\\,", $values);
+
+		$line = $d->getName() . $p . ":" . $values;
+		$line = str_replace(array("<br>","<BR>","<br/>","<BR/"),"\\n",$line);
+		$line = str_replace(array("\r\n","\n\r","\n","\r"),'\n',$line);
+		//$line = str_replace(array(',',';','\\'), array('\\,','\\;','\\\\'),$line);
+		//$line =strip_tags($line);
+		$linecount = 0;
+		while (strlen($line) > 0) {
+			$linewidth = ($linecount == 0? 75 : 74);
+			$linesize = (strlen($line) > $linewidth? $linewidth: strlen($line));
+			if($linecount > 0)
+				$txtstr .= " ";
+			$txtstr .= substr($line,0,$linesize) . "\r\n";
+			$linecount += 1;
+			$line = substr($line,$linewidth);
+		}
+		return $txtstr;
+	}
 }
 
 /**
@@ -384,8 +449,6 @@ function ZCiCal ($data = "", $maxevents = 1000000, $startevent = 0) {
 		// parse each line
 		$lines = explode("\n", $data);
 
-		//echo $data;
-		//exit;
 		$linecount = 0;
 		$eventcount = 0;
 		$eventpos = 0;
@@ -473,7 +536,17 @@ function ZCiCal ($data = "", $maxevents = 1000000, $startevent = 0) {
 						}
 						else
 						{
-							$this->curnode->data[$datanode->getName()] = $datanode;
+							if(!array_key_exists($datanode->getName(),$this->curnode->data))
+							{
+								$this->curnode->data[$datanode->getName()] = $datanode;
+							}
+							else
+							{
+								$tnode = $this->curnode->data[$datanode->getName()];
+								$this->curnode->data[$datanode->getName()] = array();
+								$this->curnode->data[$datanode->getName()][] = $tnode;
+								$this->curnode->data[$datanode->getName()][] = $datanode;
+							}
 						}
 					}
 				}
@@ -492,7 +565,17 @@ function ZCiCal ($data = "", $maxevents = 1000000, $startevent = 0) {
 					}
 					else
 					{
-						$this->curnode->data[$datanode->getName()] = $datanode;
+						if(!array_key_exists($datanode->getName(),$this->curnode->data))
+						{
+							$this->curnode->data[$datanode->getName()] = $datanode;
+						}
+						else
+						{
+							$tnode = $this->curnode->data[$datanode->getName()];
+							$this->curnode->data[$datanode->getName()] = array();
+							$this->curnode->data[$datanode->getName()][] = $tnode;
+							$this->curnode->data[$datanode->getName()][] = $datanode;
+						}
 					}
 				}
 			}
@@ -506,7 +589,7 @@ function ZCiCal ($data = "", $maxevents = 1000000, $startevent = 0) {
 				$datanode = new ZCiCalDataNode("VERSION:2.0");
 				$this->curnode->data[$datanode->getName()] = $datanode;
 
-				$datanode = new ZCiCalDataNode("PRODID:-//ZContent.net//Zap Calendar 1.0//EN");
+				$datanode = new ZCiCalDataNode("PRODID:-//ZContent.net//ZapCalLib 1.0//EN");
 				$this->curnode->data[$datanode->getName()] = $datanode;
 				$datanode = new ZCiCalDataNode("CALSCALE:GREGORIAN");
 				$this->curnode->data[$datanode->getName()] = $datanode;

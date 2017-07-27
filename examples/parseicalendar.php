@@ -31,7 +31,18 @@ if(isset($icalobj->tree->child))
 			echo "Event $ecount:\n";
 			foreach($node->data as $key => $value)
 			{
-				echo "  $key: " . $value->getValues() . "\n";
+				if(is_array($value))
+				{
+					for($i = 0; $i < count($value); $i++)
+					{
+						$p = $value[$i]->getParameters();
+						echo "  $key: " . $value[$i]->getValues() . "\n";
+					}
+				}
+				else
+				{
+					echo "  $key: " . $value->getValues() . "\n";
+				}
 			}
 		}
 	}
