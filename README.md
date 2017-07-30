@@ -19,6 +19,8 @@ With power comes responsibility.  Missing or invalid properties can cause
 the resulting iCalendar file to be invalid. Visit [iCalendar.org](http://icalendar.org) to view valid
 properties and test your feed using the site's [iCalendar validator tool](http://icalendar.org/validator.html).
 
+Library API documentation can be found at http://icalendar.org/zapcallibdocs
+
 See the examples folder for programs that read and write iCalendar
 files. At its simpliest, you need to include the library at the top of your program:
 
@@ -58,10 +60,55 @@ This example will not validate since it is missing some required elements.
 Look at the simpleevent.php example for the minimum # of elements 
 needed for a validated iCalendar file.
 
+To create a multi-event iCalendar file, simply create multiple event objects. For example:
+
+```php
+$icalobj = new ZCiCal();
+$eventobj1 = new ZCiCalNode("VEVENT", $icalobj->curnode);
+$eventobj1->addNode(new ZCiCalDataNode("SUMMARY:Event 1"));
+...
+$eventobj2 = new ZCiCalNode("VEVENT", $icalobj->curnode);
+$eventobj2->addNode(new ZCiCalDataNode("SUMMARY:Event 2"));
+...
+```
+
 To read an existing iCalendar file/feed, create the ZCiCal object with a string representing the contents of the iCalendar file:
 
 ```php
 $icalobj = new ZCiCal($icalstring);
+```
+
+Large iCalendar files can be read in chunks to reduce the amount of memory needed to hold the iCalendar feed in memory. This example reads 500 events at a time:
+
+```php
+$icalobj = null;
+$eventcount = 0;
+$maxevents = 500;
+do
+{
+	$icalobj = newZCiCal($icalstring, $maxevents, $eventcount);
+	...
+	$eventcount +=$maxevents;
+}
+while($icalobj->countEvents() >= $eventcount);
+```
+
+You can read the events from an imported (or created) iCalendar object in this manner:
+
+```php
+foreach($icalobj->tree->child as $node)
+{
+	if($node->getName() == "VEVENT")
+	{
+		foreach($node->data as $key => $value)
+		{
+			if($key == "SUMMARY")
+			{
+				echo "event title: " . $value->getValues() . "\n";
+			}
+		}
+	}
+}
 ```
 
 ## Known Limitations
