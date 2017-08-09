@@ -1,18 +1,24 @@
 <?php	
-
 /**
- * Zap Calendar Time Zone Helper Class
- *
- * @copyright   Copyright (C) 2006 - 2016 by Dan Cogliano
- * @license	 GNU General Public License version 2 or later; see LICENSE.txt
+ * timezone.php - create timezone data for use in icalendar file
+ * 
+ * @package	ZapCalLib
+ * @author	Dan Cogliano <http://zcontent.net>
+ * @copyright   Copyright (C) 2006 - 2017 by Dan Cogliano
+ * @license     GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
+ * @link	http://icalendar.org/php-library.html
  */
 
 // No direct access
 defined('_ZAPCAL') or die( 'Restricted access' );
 
 /**
+ * Zap Calendar Time Zone Helper Class
+ *
  * Class to help create timezone section of iCalendar file
  *
+ * @copyright   Copyright (C) 2006 - 2016 by Dan Cogliano
+ * @license	 GNU General Public License version 2 or later; see LICENSE.txt
  */
 class ZCTimeZoneHelper {
 

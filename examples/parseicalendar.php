@@ -1,4 +1,13 @@
 <?php
+/**
+ * parseicalendar.php
+ *
+ * @package	ZapCalLib
+ * @author	Dan Cogliano <http://zcontent.net>
+ * @copyright   Copyright (C) 2006 - 2017 by Dan Cogliano
+ * @license     GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
+ * @link	http://icalendar.org/php-library.html
+ */
 
 /**
  * Parse iCalendar Example

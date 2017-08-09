@@ -1,12 +1,15 @@
 <?php
 /**
- * Zap Calendar ical Helper Class
+ * ical.php	create iCalendar data structure
  *
- * @copyright   Copyright (C) 2006 - 2016 by Dan Cogliano
- * @license	 GNU General Public License version 2 or later; see LICENSE.txt
+ * @package	ZapCalLib
+ * @author	Dan Cogliano <http://zcontent.net>
+ * @copyright   Copyright (C) 2006 - 2017 by Dan Cogliano
+ * @license     GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
+ * @link	http://icalendar.org/php-library.html
  */
 
-// no direct access
+// No direct access
 defined('_ZAPCAL') or die( 'Restricted access' );
 
 /**
@@ -15,7 +18,6 @@ defined('_ZAPCAL') or die( 'Restricted access' );
  * The ZCiCalDataNode class contains data from an unfolded iCalendar line
  *
  */
-
 class ZCiCalDataNode {
 	/**
 	 * The name of the node
@@ -46,7 +48,7 @@ class ZCiCalDataNode {
  	 * @return void
  	 *
  	 */
-	function ZCiCalDataNode( $line ) {
+	function __construct( $line ) {
 		//echo "ZCiCalDataNode($line)<br/>\n";
 		//separate line into parameters and value
 		// look for colon separating name or parameter and value
@@ -140,14 +142,59 @@ class ZCiCalDataNode {
 /**
  * Object for storing a list of unfolded iCalendar lines (ZCiCalDataNode objects)
  *
+ * @property object $parentnode Parent of this node
+ *
+ * @property array $child Array of children for this node
+ *
+ * @property data $data Array of data for this node
+ *
+ * @property object $next Next sibling of this node
+ *
+ * @property object $prev Previous sibling of this node
  */
 
 class ZCiCalNode {
+	/**
+	 * The name of the node
+	 *
+	 * @var string
+	 */
 	var $name="";
+
+	/**
+	 * The parent of this node
+	 *
+	 * @var object
+	 */
 	var $parentnode=null;
+
+	/**
+	 * Array of children for this node
+	 *
+	 * @var array
+	 */
 	var $child= array();
+
+	/**
+	 * Array of $data for this node
+	 *
+	 * @var array
+	 */
 	var $data= array();
+
+
+	/**
+	 * Next sibling of this node
+	 *
+	 * @var object
+	 */
 	var $next=null;
+
+	/**
+	 * Previous sibling of this node
+	 *
+	 * @var object
+	 */
 	var $prev=null;
 
 	/**
@@ -159,7 +206,7 @@ class ZCiCalNode {
 	 *
 	 * @param bool $first Is this the first child for this parent?
 	 */
-	function ZCiCalNode( $_name, & $_parent, $first = false) {
+	function __construct( $_name, & $_parent, $first = false) {
 		$this->name = $_name;
 		$this->parentnode = $_parent;
 		if($_parent != null){
@@ -381,6 +428,9 @@ class ZCiCalNode {
 
 	/**
  	* print an attribute line
+
+	* @param object $d attributes
+	* @param object $p properties
  	*
 	*/
 	function printDataLine($d, $p)
@@ -416,7 +466,17 @@ class ZCiCalNode {
  *
 */
 class ZCiCal {
+	/**
+	 * The root node of the object tree
+	 *
+	 * @var object
+	 */
 	var $tree=null;
+	/**
+	 * The most recently created  node in the tree 
+	 *
+	 * @var object
+	 */
 	var $curnode=null;
 
 /**
@@ -434,7 +494,7 @@ class ZCiCal {
  *
 *
 */
-function ZCiCal ($data = "", $maxevents = 1000000, $startevent = 0) {
+function __construct($data = "", $maxevents = 1000000, $startevent = 0) {
 
 	if($data != ""){
 		// unfold lines
@@ -472,14 +532,14 @@ function ZCiCal ($data = "", $maxevents = 1000000, $startevent = 0) {
 					$this->curnode = new ZCiCalNode($name, $this->curnode);
 					if($this->tree == null)
 						$this->tree = $this->curnode;
-					}
-					//echo "new node: " . $this->curnode->name . "<br/>\n";
-					/*
-					if($this->curnode->getParent() != null)
-						echo "parent of " . $this->curnode->getName() . " is " . $this->curnode->getParent()->getName() . "<br/>";
-					else
-						echo "parent of " . $this->curnode->getName() . " is null<br/>";
-					*/
+				}
+				//echo "new node: " . $this->curnode->name . "<br/>\n";
+				/*
+				if($this->curnode->getParent() != null)
+					echo "parent of " . $this->curnode->getName() . " is " . $this->curnode->getParent()->getName() . "<br/>";
+				else
+					echo "parent of " . $this->curnode->getName() . " is null<br/>";
+				*/
 			}
 			else if(substr($line,0,4) == "END:") {
 				$name = substr($line,4);
@@ -768,6 +828,7 @@ function &getPrevSibling(& $thisnode){
  * @param string iCal formated date/time string
  *
  * @return int Unix timestamp
+ * @deprecated Use ZDateHelper::toUnixDateTime() instead
  */
 
 function toUnixDateTime($datetime){
@@ -794,6 +855,7 @@ function toUnixDateTime($datetime){
  * @param int $datetime Unix timestamp, leave blank for current date/time
  *
  * @return string formatted iCal date/time string
+ * @deprecated Use ZDateHelper::fromUnixDateTimetoiCal() instead
  */
 
 static function fromUnixDateTime($datetime = null){
@@ -812,6 +874,7 @@ static function fromUnixDateTime($datetime = null){
  * @param int $datetime Unix timestamp, leave blank for current date/time
  *
  * @return string formatted iCal date string
+ * @deprecated Use ZDateHelper::fromUnixDateTimetoiCal() instead
  */
 
 static function fromUnixDate($datetime = null){
@@ -827,6 +890,7 @@ static function fromUnixDate($datetime = null){
  * @param string $datetime SQL date or SQL date-time string
  *
  * @return string iCal formatted string
+ * @deprecated Use ZDateHelper::fromSqlDateTime() instead
  */
 static function fromSqlDateTime($datetime = ""){
 	if($datetime == "")
@@ -842,8 +906,8 @@ static function fromSqlDateTime($datetime = ""){
  * Format iCal time format to either SQL date or SQL date-time format
  * 
  * @param string $datetime icalendar formatted date or date-time
- * 
  * @return string SQL date or SQL date-time string
+ * @deprecated Use ZDateHelper::toSqlDateTime() instead
  */
 static function toSqlDateTime($datetime = ""){
 	if($datetime == "")
@@ -910,7 +974,7 @@ static function getTZValues($node){
  *
  * @param string $content
  *
- * @return escaped string
+ * @return string
  */
 static function formatContent($content)
 {

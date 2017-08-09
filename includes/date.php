@@ -1,16 +1,20 @@
 <?php
-
 /**
- * Zap Calendar Date Helper Class
+ * date.php - date helper class
  *
- * @copyright   Copyright (C) 2006 - 2016 by Dan Cogliano
- * @license	 GNU General Public License version 2 or later; see LICENSE.txt
+ * @package	ZapCalLib
+ * @author	Dan Cogliano <http://zcontent.net>
+ * @copyright   Copyright (C) 2006 - 2017 by Dan Cogliano
+ * @license     GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
+ * @link	http://icalendar.org/php-library.html
  */
 
 // No direct access
 defined('_ZAPCAL') or die( 'Restricted access' );
 
 /**
+ * Zap Calendar Date Helper Class
+ *
  * Helper class for various date functions
  */
 class ZDateHelper {
