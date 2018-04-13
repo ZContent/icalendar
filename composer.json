@@ -1,0 +1,36 @@
+{
+    "name": "zcontent/icalendar",
+    "type": "library",
+    "description": "ZapCalLib is the icalendar.org PHP implementation of rfc5545, management of iCal formatted files",
+    "keywords": [ "rfc2445",
+                  "rfc5545",
+                  "rfc6321",
+                  "management",
+                  "calendar",
+                  "vCalendar",
+                  "vevent",
+                  "vtodo",
+                  "vjournal",
+                  "vfreebusy",
+                  "valarm",
+                  "vtimezone",
+                  "standard",
+                  "daylight",
+                  "file" ],
+    "time" : "2018-03-30",
+    "license": "(GNU GPLv3)",
+    "homepage": "https://icalendar.org/php-library.html",
+    "authors": [
+        {
+            "name": "Dan Cogliano",
+            "email": "dan@zcontent.net"
+        }
+    ],
+    "autoload": {
+        "files": ["autoload.php"],
+        "psr-4": { "zcontent\\icalendar\\": ["src/"] }
+    },
+    "require": {
+        "php": ">=5.3"
+    }
+}
