@@ -1,7 +1,7 @@
-<?php	
+<?php
 /**
  * timezone.php - create timezone data for use in icalendar file
- * 
+ *
  * @package	ZapCalLib
  * @author	Dan Cogliano <http://zcontent.net>
  * @copyright   Copyright (C) 2006 - 2017 by Dan Cogliano
@@ -35,7 +35,7 @@ class ZCTimeZoneHelper {
 	 *
 	 * @return object return VTIMEZONE object
 	 */
-	static function getTZNode($startyear, $endyear, $tzid, $parentnode)
+	public static function getTZNode($startyear, $endyear, $tzid, $parentnode)
 	{
 		$tzmins = array();
 		$tzmaxs = array();
