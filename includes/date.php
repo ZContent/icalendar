@@ -26,9 +26,9 @@ class ZDateHelper {
 	 *
 	 * @param int $year is between 1 and 32767 inclusive
 	 *
-	 * @return int 
+	 * @return int
 	 */
-	static function DayInMonth($month, $year) {
+	public static function DayInMonth($month, $year) {
 	   $daysInMonth = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 	   if ($month != 2) return $daysInMonth[$month - 1];
 	   return (checkdate($month, 29, $year)) ? 29 : 28;
@@ -43,7 +43,7 @@ class ZDateHelper {
 	 *
 	 * @return bool
 	 */
-	static function isToday($date, $tzid = "UTC") {
+	public static function isToday($date, $tzid = "UTC") {
 		$dtz = new DateTimeZone($tzid);
 		$dt = new DateTime("now", $dtz);
 		$now = time() + $dtz->getOffset($dt);
@@ -59,7 +59,7 @@ class ZDateHelper {
 	 *
 	 * @return bool
 	 */
-	static function isBeforeToday($date, $tzid = "UTC"){
+	public static function isBeforeToday($date, $tzid = "UTC"){
 		$dtz = new DateTimeZone($tzid);
 		$dt = new DateTime("now", $dtz);
 		$now = time() + $dtz->getOffset($dt);
@@ -76,7 +76,7 @@ class ZDateHelper {
 	 *
 	 * @return bool
 	 */
-	static function isAfterToday($date, $tzid = "UTC"){
+	public static function isAfterToday($date, $tzid = "UTC"){
 		$dtz = new DateTimeZone($tzid);
 		$dt = new DateTime("now", $dtz);
 		$now = time() + $dtz->getOffset($dt);
@@ -93,7 +93,7 @@ class ZDateHelper {
 	 *
 	 * @return bool
 	 */
-	static function isTomorrow($date, $tzid = "UTC") {
+	public static function isTomorrow($date, $tzid = "UTC") {
 		$dtz = new DateTimeZone($tzid);
 		$dt = new DateTime("now", $dtz);
 		$now = time() + $dtz->getOffset($dt);
@@ -112,7 +112,7 @@ class ZDateHelper {
 	 *
 	 * @return bool
 	 */
-	static function isFuture($date, $tzid = "UTC"){
+	public static function isFuture($date, $tzid = "UTC"){
 		$dtz = new DateTimeZone($tzid);
 		$dt = new DateTime("now", $dtz);
 		$now = time() + $dtz->getOffset($dt);
@@ -131,7 +131,7 @@ class ZDateHelper {
 	 *
 	 * @return bool
 	 */
-	static function isPast($date, $tzid = "UTC") {
+	public static function isPast($date, $tzid = "UTC") {
 		$dtz = new DateTimeZone($tzid);
 		$dt = new DateTime("now", $dtz);
 		$now = time() + $dtz->getOffset($dt);
@@ -145,7 +145,7 @@ class ZDateHelper {
 	 *
 	 * @return int
 	 */
-	static function now($tzid = "UTC"){
+	public static function now($tzid = "UTC"){
 		$dtz = new DateTimeZone($tzid);
 		$dt = new DateTime("now", $dtz);
 		$now = time() + $dtz->getOffset($dt);
@@ -159,7 +159,7 @@ class ZDateHelper {
 	 *
 	 * @return bool
 	 */
-	static function isWeekend($date) {
+	public static function isWeekend($date) {
 		$dow = gmdate('w',$date);
 		return $dow == 0 || $dow == 6;
 	}
@@ -171,7 +171,7 @@ class ZDateHelper {
 	 *
 	 * @return string
 	 */
-	static function toSqlDateTime($t = 0)
+	public static function toSqlDateTime($t = 0)
 	{
 		date_default_timezone_set('GMT');
 		if($t == 0)
@@ -186,7 +186,7 @@ class ZDateHelper {
 	 *
 	 * @return string
 	 */
-	static function toSqlDate($t = 0)
+	public static function toSqlDate($t = 0)
 	{
 		date_default_timezone_set('GMT');
 		if($t == 0)
@@ -198,10 +198,10 @@ class ZDateHelper {
 	 * Format iCal date-time string to Unix timestamp
 	 *
 	 * @param string $datetime in iCal time format ( YYYYMMDD or YYYYMMDDTHHMMSS or YYYYMMDDTHHMMSSZ )
-	 * 
+	 *
 	 * @return int Unix timestamp
 	 */
-	static function fromiCaltoUnixDateTime($datetime) {
+	public static function fromiCaltoUnixDateTime($datetime) {
 			// first check format
 			$formats = array();
 			$formats[] = "/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/";
@@ -237,19 +237,19 @@ class ZDateHelper {
 	 *
 	 * @return string
 	 */
-	static function fromUnixDateTimetoiCal($datetime){
+	public static function fromUnixDateTimetoiCal($datetime){
 		date_default_timezone_set('GMT');
 		return gmdate("Ymd\THis",$datetime);
 	}
 
 	/**
 	 * Convert iCal duration string to # of seconds
-	 * 
+	 *
 	 * @param string $duration iCal duration string
 	 *
-	 * return int 
+	 * return int
 	 */
-	static function iCalDurationtoSeconds($duration) {
+	public static function iCalDurationtoSeconds($duration) {
 		$secs = 0;
 		if($duration{0} == "P") {
 			$duration = str_replace(array("H","M","S","T","D","W","P"),array("H,","M,","S,","","D,","W,",""),$duration);
@@ -291,7 +291,7 @@ class ZDateHelper {
 	 *
 	 * @return bool
 	 */
-	static function inDay($daystart, $begin, $end)
+	public static function inDay($daystart, $begin, $end)
 	{
 		//$dayend = $daystart + 60*60*24 - 60;
 		// add 1 day to determine end of day
@@ -300,7 +300,7 @@ class ZDateHelper {
 		$dayend = self::addDate($daystart, 0,0,0,0,1,0);
 
 		$end = max($begin, $end); // $end can't be less than $begin
-		$inday = 
+		$inday =
 			($daystart <= $begin && $begin < $dayend)
 			||($daystart < $end && $end < $dayend)
 			||($begin <= $daystart && $end > $dayend)
@@ -315,7 +315,7 @@ class ZDateHelper {
 	 *
 	 * @return int Unix date-time timestamp
 	 */
-	static function toUnixDate($datetime)
+	public static function toUnixDate($datetime)
 	{
 			$year = substr($datetime,0,4);
 			$month = substr($datetime,5,2);
@@ -331,7 +331,7 @@ class ZDateHelper {
 	 *
 	 * @return int Unix timestamp
 	 */
-	static function toUnixDateTime($datetime)
+	public static function toUnixDateTime($datetime)
 	{
 		// convert to absolute dates if neccessary
 		$datetime = self::getAbsDate($datetime);
@@ -357,18 +357,18 @@ class ZDateHelper {
 	 * @param int $hour add or subtract hours from date
 	 *
 	 * @param int $min add or subtract minutes from date
-	 * 
+	 *
 	 * @param int $sec add or subtract seconds from date
-	 * 
+	 *
 	 * @param int $month add or subtract months from date
-	 * 
+	 *
 	 * @param int $day add or subtract days from date
-	 * 
+	 *
 	 * @param int $year add or subtract years from date
 	 *
 	 * @param string $tzid PHP recognized timezone (default is UTC)
 	 */
-	static function addDate($date, $hour, $min, $sec, $month, $day, $year, $tzid = "UTC") {
+	public static function addDate($date, $hour, $min, $sec, $month, $day, $year, $tzid = "UTC") {
 		date_default_timezone_set($tzid);
 		$sqldate = self::toSQLDateTime($date);
 		$tdate = array();
@@ -401,7 +401,7 @@ class ZDateHelper {
 	 *
 	 * @return int Unix timestamp
 	 */
-	static function getDateFromDay($date, $week, $wday,$tzid="UTC") {
+	public static function getDateFromDay($date, $week, $wday,$tzid="UTC") {
 		//echo "getDateFromDay(" . self::toSqlDateTime($date) . ",$week,$wday)<br/>\n";
 		// determine first day in month
 		$tdate = getdate($date);
@@ -427,14 +427,14 @@ class ZDateHelper {
 
 	/**
 	 * Convert UTC date-time to local date-time
-	 * 
+	 *
 	 * @param string $sqldate SQL date-time string
 	 *
 	 * @param string $tzid PHP recognized timezone (default is "UTC")
 	 *
 	 * @return string SQL date-time string
 	 */
-	static function toLocalDateTime($sqldate, $tzid = "UTC" ){
+	public static function toLocalDateTime($sqldate, $tzid = "UTC" ){
 		try
 		{
 			$timezone = new DateTimeZone($tzid);
@@ -452,14 +452,14 @@ class ZDateHelper {
 
 	/**
 	 * Convert local date-time to UTC date-time
-	 * 
+	 *
 	 * @param string $sqldate SQL date-time string
 	 *
 	 * @param string $tzid PHP recognized timezone (default is "UTC")
 	 *
 	 * @return string SQL date-time string
 	 */
-	static function toUTCDateTime($sqldate, $tzid = "UTC" ){
+	public static function toUTCDateTime($sqldate, $tzid = "UTC" ){
 
 		date_default_timezone_set("UTC");
 		try
@@ -484,7 +484,7 @@ class ZDateHelper {
 	 *
 	 * Examples of relative dates are "-2y" for 2 years ago, "18m"
 	 * for 18 months after today. Relative date uses "y", "m" and "d" for
-	 * year, month and day. Relative date can be combined into comma 
+	 * year, month and day. Relative date can be combined into comma
 	 * separated list, i.e., "-1y,-1d" for 1 year and 1 day ago.
 	 *
 	 * @param string $date relative date string (i.e. "1y" for 1 year from today)
@@ -493,7 +493,7 @@ class ZDateHelper {
 	 *
 	 * @return string in SQL date-time format
 	 */
-	static function getAbsDate($date,$rdate = ""){
+	public static function getAbsDate($date,$rdate = ""){
 		if(str_replace(array("y","m","d","h","n"),"",strtolower($date)) != strtolower($date)){
 			date_default_timezone_set("UTC");
 			if($rdate == "")
@@ -545,7 +545,7 @@ class ZDateHelper {
 	 *
 	 * @return string iCal date-time string
 	 */
-	static function toiCalDateTime($datetime = null){
+	public static function toiCalDateTime($datetime = null){
 		date_default_timezone_set('UTC');
 		if($datetime == null)
 			$datetime = time();
@@ -559,7 +559,7 @@ class ZDateHelper {
 	 *
 	 * @return string iCal date-time string
 	 */
-	static function toiCalDate($datetime = null){
+	public static function toiCalDate($datetime = null){
 		date_default_timezone_set('UTC');
 		if($datetime == null)
 			$datetime = time();

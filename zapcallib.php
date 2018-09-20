@@ -25,4 +25,3 @@ if(!defined('_ZAPCAL_BASE'))
 }
 
 require_once(_ZAPCAL_BASE . '/includes/framework.php');
-
