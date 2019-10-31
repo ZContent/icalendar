@@ -22,33 +22,26 @@ namespace ICalendarOrg;
  */
 class ZCiCalNode
 	{
-	/**
-	 * The name of the node
-	 *
-	 * @var string
-	 */
-	public $name = '';
-
-	/**
-	 * The parent of this node
-	 *
-	 * @var object
-	 */
-	public $parentnode = null;
 
 	/**
 	 * Array of children for this node
 	 *
 	 * @var array
 	 */
-	public $child = array();
+	public $child = [];
 
 	/**
 	 * Array of $data for this node
 	 *
 	 * @var array
 	 */
-	public $data = array();
+	public $data = [];
+	/**
+	 * The name of the node
+	 *
+	 * @var string
+	 */
+	public $name = '';
 
 
 	/**
@@ -57,6 +50,13 @@ class ZCiCalNode
 	 * @var object
 	 */
 	public $next = null;
+
+	/**
+	 * The parent of this node
+	 *
+	 * @var object
+	 */
+	public $parentnode = null;
 
 	/**
 	 * Previous sibling of this node
@@ -111,16 +111,6 @@ class ZCiCalNode
 		}
 
 	/**
-	* Return the name of the object
-	*
-	* @return string
-	*/
-	public function getName()
-		{
-		return $this->name;
-		}
-
-	/**
 	 * Add node to list
 	 *
 	 * @param object $node
@@ -131,9 +121,9 @@ class ZCiCalNode
 		{
 		if (array_key_exists($node->getName(), $this->data))
 			{
-			if (!is_array($this->data[$node->getName()]))
+			if (! is_array($this->data[$node->getName()]))
 				{
-				$this->data[$node->getName()] = array();
+				$this->data[$node->getName()] = [];
 				$this->data[$node->getName()][] = $node;
 				}
 			$this->data[$node->getName()][] = $node;
@@ -142,93 +132,8 @@ class ZCiCalNode
 			{
 			$this->data[$node->getName()] = $node;
 			}
+
 		return $this;
-		}
-
-	/**
-	 * Get Attribute
-	 *
-	 * @param int $i array id of attribute to get
-	 *
-	 * @return string
-	 */
-	public function getAttrib($i)
-		{
-		return $this->attrib[$i];
-		}
-
-	/**
-	 * Set Attribute
-	 *
-	 * @param string $value value of attribute to set
-	 *
-	 * @return ZCiCalNode
-	 */
-	public function setAttrib($value)
-		{
-		$this->attrib[] = $value;
-		return $this;
-		}
-
-	/**
-	 * Get the parent object of this object
-	 *
-	 * @return object parent of this object
-	 */
-	public function getParent()
-		{
-		return $this->parentnode;
-		}
-
-	/**
-	 * Get the first child of this object
-	 *
-	 * @return object|null The first child
-	 *
-	 * @return mixed
-	 */
-	public function getFirstChild()
-		{
-		if (count($this->child) > 0)
-			{
-			//echo 'moving from ' . $this->getName() . ' to ' . $this->child[0]->getName() . '<br/>';
-			return $this->child[0];
-			}
-		return null;
-		}
-
-	/**
-	* Print object tree in HTML for debugging purposes
-	*
-	* @param object $node select part of tree to print, or leave blank for full tree
-	* @param int $level Level of recursion (usually leave this blank)
-	*
-	* @return string - HTML formatted display of object tree
-	*/
-	public function printTree($node = null, $level = 1)
-		{
-		$level += 1;
-		$html = '';
-		if ($node == null)
-			{
-			$node = $this->parentnode;
-			}
-		if ($level > 5)
-			{
-			die("levels nested too deep<br/>\n");
-			//return;
-			}
-		for ($i = 0; $i < $level; $i++)
-			{
-			$html .= '+';
-			}
-		$html .= $node->getName() . "<br/>\n";
-		foreach ($node->child as $c)
-			{
-			$html .= $node->printTree($c, $level);
-			}
-		$level -= 1;
-		return $html;
 		}
 
 	/**
@@ -286,29 +191,7 @@ class ZCiCalNode
 							}
 						}
 					$txtstr .= $this->printDataLine($d, $p);
-					/*
-					$values = $d->getValues();
-					// don't think we need this, Sunbird does not like it in the EXDATE field
-					//$values = str_replace(',', "\\,", $values);
-
-					$line = $d->getName() . $p . ':' . $values;
-					$line = str_replace(array('<br>','<BR>','<br/>','<BR/'),"\\n",$line);
-					$line = str_replace(array("\r\n","\n\r","\n","\r"),'\n',$line);
-					//$line = str_replace(array(',',';','\\'), array('\\,','\\;','\\\\'),$line);
-					//$line =strip_tags($line);
-					$linecount = 0;
-					while (strlen($line) > 0) {
-						$linewidth = ($linecount == 0? 75 : 74);
-						$linesize = (strlen($line) > $linewidth? $linewidth: strlen($line));
-						if($linecount > 0)
-							$txtstr .= " ";
-						$txtstr .= substr($line,0,$linesize) . "\r\n";
-						$linecount += 1;
-						$line = substr($line,$linewidth);
 					}
-					*/
-					}
-				//echo $line . "\n";
 				}
 			}
 		if (property_exists($node, 'child'))
@@ -319,7 +202,58 @@ class ZCiCalNode
 				}
 			}
 		$txtstr .= 'END:' . $node->getName() . "\r\n";
+
 		return $txtstr;
+		}
+
+	/**
+	 * Get Attribute
+	 *
+	 * @param int $i array id of attribute to get
+	 *
+	 * @return string
+	 */
+	public function getAttrib($i)
+		{
+		return $this->attrib[$i];
+		}
+
+	/**
+	 * Get the first child of this object
+	 *
+	 * @return object|null The first child
+	 *
+	 * @return mixed
+	 */
+	public function getFirstChild()
+		{
+		if (count($this->child) > 0)
+			{
+			//echo 'moving from ' . $this->getName() . ' to ' . $this->child[0]->getName() . '<br/>';
+			return $this->child[0];
+			}
+
+		return null;
+		}
+
+	/**
+	* Return the name of the object
+	*
+	* @return string
+	*/
+	public function getName()
+		{
+		return $this->name;
+		}
+
+	/**
+	 * Get the parent object of this object
+	 *
+	 * @return object parent of this object
+	 */
+	public function getParent()
+		{
+		return $this->parentnode;
 		}
 
 	/**
@@ -339,8 +273,8 @@ class ZCiCalNode
 		//$values = str_replace(',', "\\,", $values);
 
 		$line = $d->getName() . $p . ':' . $values;
-		$line = str_replace(array('<br>', '<BR>', '<br/>', '<BR/'), "\\n", $line);
-		$line = str_replace(array("\r\n", "\n\r", "\n", "\r"), '\n', $line);
+		$line = str_replace(['<br>', '<BR>', '<br/>', '<BR/'], '\\n', $line);
+		$line = str_replace(["\r\n", "\n\r", "\n", "\r"], '\n', $line);
 		//$line = str_replace(array(',',';','\\'), array('\\,','\\;','\\\\'),$line);
 		//$line =strip_tags($line);
 		$linecount = 0;
@@ -356,7 +290,56 @@ class ZCiCalNode
 			$linecount += 1;
 			$line = substr($line, $linewidth);
 			}
+
 		return $txtstr;
 		}
 
+	/**
+	* Print object tree in HTML for debugging purposes
+	*
+	* @param object $node select part of tree to print, or leave blank for full tree
+	* @param int $level Level of recursion (usually leave this blank)
+	*
+	* @return string - HTML formatted display of object tree
+	*/
+	public function printTree($node = null, $level = 1)
+		{
+		$level += 1;
+		$html = '';
+		if ($node == null)
+			{
+			$node = $this->parentnode;
+			}
+		if ($level > 5)
+			{
+			die("levels nested too deep<br/>\n");
+			//return;
+			}
+		for ($i = 0; $i < $level; $i++)
+			{
+			$html .= '+';
+			}
+		$html .= $node->getName() . "<br/>\n";
+		foreach ($node->child as $c)
+			{
+			$html .= $node->printTree($c, $level);
+			}
+		$level -= 1;
+
+		return $html;
+		}
+
+	/**
+	 * Set Attribute
+	 *
+	 * @param string $value value of attribute to set
+	 *
+	 * @return ZCiCalNode
+	 */
+	public function setAttrib($value)
+		{
+		$this->attrib[] = $value;
+
+		return $this;
+		}
 	}

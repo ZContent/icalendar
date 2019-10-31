@@ -30,14 +30,14 @@ class ZCiCalDataNode
 	 *
 	 * @var array
 	 */
-	public $parameter = array();
+	public $parameter = [];
 
 	/**
 	 * Node values (after the colon ':')
 	 *
 	 * @var array
 	 */
-	public $value = array();
+	public $value = [];
 
 	/**
 	 * Create an object from an unfolded iCalendar line
@@ -52,41 +52,44 @@ class ZCiCalDataNode
 		//separate line into parameters and value
 		// look for colon separating name or parameter and value
 		// first change any escaped colons temporarily to make it easier
-		$tline = str_replace("\\:", '`~', $line);
+		$tline = str_replace('\\:', '`~', $line);
 		// see if first colon is inside a quoted string
 		$i = 0;
 		$datafind = false;
 		$inquotes = false;
-		while (!$datafind && ($i < strlen($tline)))
+		while (! $datafind && ($i < strlen($tline)))
 			{
 			//echo "$i: " . $tline{$i} . ", ord() = " . ord($tline{$i}) . "<br>\n";
-			if (!$inquotes && $tline{$i} == ':')
+			if (! $inquotes && $tline{$i} == ':')
 				{
 				$datafind = true;
 				}
 			else
 				{
 				$i += 1;
-				if (substr($tline, $i, 1) == '"') $inquotes = !$inquotes;
+				if (substr($tline, $i, 1) == '"')
+					{
+					$inquotes = ! $inquotes;
+					}
 				}
 			}
 		if ($datafind)
 			{
-			$value = str_replace('`~', "\\:", substr($line, $i + 1));
+			$value = str_replace('`~', '\\:', substr($line, $i + 1));
 			// fix escaped characters (don't see double quotes in spec but Apple apparently uses it in iCal)
-			$value = str_replace(array('\\N', '\\n', '\\"'), array("\n", "\n", '"'), $value);
-			$tvalue = str_replace("\\,", '`~', $value);
+			$value = str_replace(['\\N', '\\n', '\\"'], ["\n", "\n", '"'], $value);
+			$tvalue = str_replace('\\,', '`~', $value);
 			//echo 'value: ' . $tvalue . "<br>\n";
 			$tvalue = explode(',', $tvalue);
-			$value = str_replace('`~', "\\,", $tvalue);
+			$value = str_replace('`~', '\\,', $tvalue);
 			$this->value = $value;
 			}
 
 		$parameter = trim(substr($line, 0, $i));
 
-		$parameter = str_replace("\\;", '`~', $parameter);
+		$parameter = str_replace('\\;', '`~', $parameter);
 		$parameters = explode(';', $parameter);
-		$parameters = str_replace('`~', "\\;", $parameters);
+		$parameters = str_replace('`~', '\\;', $parameters);
 		$this->name = array_shift($parameters);
 		foreach ($parameters as $parameter)
 			{
@@ -95,9 +98,9 @@ class ZCiCalDataNode
 				{
 				$param = substr($parameter, 0, $pos);
 				$paramvalue = substr($parameter, $pos + 1);
-				$tvalue = str_replace("\\,", '`~', $paramvalue);
+				$tvalue = str_replace('\\,', '`~', $paramvalue);
 				//$tvalue = explode(',',$tvalue);
-				$paramvalue = str_replace('`~', "\\,", $tvalue);
+				$paramvalue = str_replace('`~', '\\,', $tvalue);
 				$this->parameter[strtolower($param)] = $paramvalue;
 				//$this->paramvalue[] = $paramvalue;
 				}

@@ -17,17 +17,17 @@ namespace ICalendarOrg;
 class ZCiCal
 	{
 	/**
-	 * The root node of the object tree
-	 *
-	 * @var object
-	 */
-	public $tree = null;
-	/**
 	 * The most recently created  node in the tree
 	 *
 	 * @var object
 	 */
 	public $curnode = null;
+	/**
+	 * The root node of the object tree
+	 *
+	 * @var object
+	 */
+	public $tree = null;
 
 	/**
 	 * The main iCalendar object containing ZCiCalDataNodes and ZCiCalNodes.
@@ -42,17 +42,16 @@ class ZCiCal
 	 */
 	public function __construct($data = '', $maxevents = 1000000, $startevent = 0)
 		{
-
 		if ($data != '')
 			{
 			// unfold lines
 			// first change all eol chars to "\n"
-			$data = str_replace(array("\r\n", "\n\r", "\n", "\r"), "\n", $data);
+			$data = str_replace(["\r\n", "\n\r", "\n", "\r"], "\n", $data);
 			// now unfold lines
 			//$data = str_replace(array("\n ", "\n	"),"!?", $data);
-			$data = str_replace(array("\n ", "\n	"), '', $data);
+			$data = str_replace(["\n ", "\n	"], '', $data);
 			// replace special iCal chars
-			$data = str_replace(array("\\\\", "\,"), array("\\", ','), $data);
+			$data = str_replace(['\\\\', "\,"], ['\\', ','], $data);
 
 			// parse each line
 			$lines = explode("\n", $data);
@@ -95,7 +94,7 @@ class ZCiCal
 						echo 'parent of ' . $this->curnode->getName() . ' is null<br/>';
 					*/
 					}
-				else if (substr($line, 0, 4) == 'END:')
+				elseif (substr($line, 0, 4) == 'END:')
 					{
 					$name = substr($line, 4);
 					if ($name == 'VEVENT')
@@ -145,7 +144,7 @@ class ZCiCal
 							{
 							if ($datanode->getName() == 'EXDATE')
 								{
-								if (!array_key_exists($datanode->getName(), $this->curnode->data))
+								if (! array_key_exists($datanode->getName(), $this->curnode->data))
 									{
 									$this->curnode->data[$datanode->getName()] = $datanode;
 									}
@@ -156,14 +155,14 @@ class ZCiCal
 								}
 							else
 								{
-								if (!array_key_exists($datanode->getName(), $this->curnode->data))
+								if (! array_key_exists($datanode->getName(), $this->curnode->data))
 									{
 									$this->curnode->data[$datanode->getName()] = $datanode;
 									}
 								else
 									{
 									$tnode = $this->curnode->data[$datanode->getName()];
-									$this->curnode->data[$datanode->getName()] = array();
+									$this->curnode->data[$datanode->getName()] = [];
 									$this->curnode->data[$datanode->getName()][] = $tnode;
 									$this->curnode->data[$datanode->getName()][] = $datanode;
 									}
@@ -174,7 +173,7 @@ class ZCiCal
 						{
 						if ($datanode->getName() == 'EXDATE')
 							{
-							if (!array_key_exists($datanode->getName(), $this->curnode->data))
+							if (! array_key_exists($datanode->getName(), $this->curnode->data))
 								{
 								$this->curnode->data[$datanode->getName()] = $datanode;
 								}
@@ -185,14 +184,14 @@ class ZCiCal
 							}
 						else
 							{
-							if (!array_key_exists($datanode->getName(), $this->curnode->data))
+							if (! array_key_exists($datanode->getName(), $this->curnode->data))
 								{
 								$this->curnode->data[$datanode->getName()] = $datanode;
 								}
 							else
 								{
 								$tnode = $this->curnode->data[$datanode->getName()];
-								$this->curnode->data[$datanode->getName()] = array();
+								$this->curnode->data[$datanode->getName()] = [];
 								$this->curnode->data[$datanode->getName()][] = $tnode;
 								$this->curnode->data[$datanode->getName()][] = $datanode;
 								}
@@ -219,13 +218,13 @@ class ZCiCal
 			}
 		}
 
-/**
- * CountEvents()
- *
- * Return the # of VEVENTs in the object
- *
- * @return int
- */
+	/**
+	 * CountEvents()
+	 *
+	 * Return the # of VEVENTs in the object
+	 *
+	 * @return int
+	 */
 
 	public function countEvents()
 		{
@@ -240,16 +239,17 @@ class ZCiCal
 					}
 				}
 			}
+
 		return $count;
 		}
 
-/**
- * CountVenues()
- *
- * Return the # of VVENUEs in the object
- *
- * @return int
- */
+	/**
+	 * CountVenues()
+	 *
+	 * Return the # of VVENUEs in the object
+	 *
+	 * @return int
+	 */
 
 	public function countVenues()
 		{
@@ -258,9 +258,13 @@ class ZCiCal
 			{
 			foreach ($this->tree->child as $child)
 				{
-				if ($child->getName() == 'VVENUE') $count++;
+				if ($child->getName() == 'VVENUE')
+					{
+					$count++;
+					}
 				}
 			}
+
 		return $count;
 		}
 
@@ -277,188 +281,17 @@ class ZCiCal
 		}
 
 	/**
-	 * Get first event in object list
-	 * Use getNextEvent() to navigate through list
+	 * Escape slashes, commas and semicolons in strings
 	 *
-	 * @return object The first event, or null
+	 * @param string $content
+	 *
+	 * @return string
 	 */
-	public function getFirstEvent()
+	public static function formatContent($content)
 		{
-		if ($this->countEvents() > 0)
-			{
-			$child = $this->tree->child[0];
-			$event = false;
-			while (!$event && $child != null)
-				{
-				if ($child->getName() == 'VEVENT') $event = true;
-				else $child = $child->next;
-				}
-			return $child;
-			}
-		return null;
-		}
+		$content = str_replace(['\\', ',', ';'], ['\\\\', '\\,', '\\;'], $content);
 
-	/**
-	 * Get next event in object list
-	 *
-	 * @param object $event The current event object
-	 *
-	 * @return object Returns the next event or null if past last event
-	 */
-	public function getNextEvent($event)
-		{
-		do
-			{
-			$event = $event->next;
-			}
-		while ($event != null && $event->getName() != 'VEVENT');
-		return $event;
-		}
-
-	/**
-	 * Get first venue in object list
-	 * Use getNextVenue() to navigate through list
-	 *
-	 * @return object The first venue, or null
-	 */
-	public function getFirstVenue()
-		{
-		if ($this->countVenues() > 0)
-			{
-			$child = $this->tree->child[0];
-			$event = false;
-			while (!$event && $child != null)
-				{
-				if ($child->getName() == 'VVENUE') $event = true;
-				else $child = $child->next;
-				}
-			return $child;
-			}
-		return null;
-		}
-
-	/**
-	 * Get next venue in object list
-	 *
-	 * @param object $venue The current venue object
-	 *
-	 * @return object Returns the next venue or null if past last venue
-	 */
-	public function getNextVenue($venue)
-		{
-		do
-			{
-			$venue = $venue->next;
-			}
-		while ($venue != null && $venue->getName() != 'VVENUE');
-		return $venue;
-		}
-
-	/**
-	 * Get first child in object list
-	 * Use getNextSibling() and getPreviousSibling() to navigate through list
-	 *
-	 * @param object $thisnode The parent object
-	 *
-	 * @return object The child object
-	 */
-	public function getFirstChild($thisnode)
-		{
-		if (count($thisnode->child) > 0)
-			{
-			//echo 'moving from ' . $thisnode->getName() . ' to ' . $thisnode->child[0]->getName() . '<br/>';
-			return $thisnode->child[0];
-			}
-		return null;
-		}
-
-	/**
-	 * Get next sibling in object list
-	 *
-	 * @param object $thisnode The current object
-	 *
-	 * @return object Returns the next sibling
-	 */
-	public function getNextSibling($thisnode)
-		{
-		return $thisnode->next;
-		}
-
-	/**
-	 * Get previous sibling in object list
-	 *
-	 * @param object $thisnode The current object
-	 *
-	 * @return object Returns the previous sibling
-	 */
-	public function getPrevSibling($thisnode)
-		{
-		return $thisnode->prev;
-		}
-
-	/**
-	 * Read date/time in iCal formatted string
-	 *
-	 * @param string iCal formated date/time string
-	 *
-	 * @return int Unix timestamp
-	 * @deprecated Use ZDateHelper::toUnixDateTime() instead
-	 */
-	public function toUnixDateTime($datetime)
-		{
-		$year = substr($datetime, 0, 4);
-		$month = substr($datetime, 4, 2);
-		$day = substr($datetime, 6, 2);
-		$hour = 0;
-		$minute = 0;
-		$second = 0;
-		if (strlen($datetime) > 8 && $datetime{8} == 'T')
-			{
-			$hour = substr($datetime, 9, 2);
-			$minute = substr($datetime, 11, 2);
-			$second = substr($datetime, 13, 2);
-			}
-		return mktime($hour, $minute, $second, $month, $day, $year);
-		}
-
-	/**
-	 * fromUnixDateTime()
-	 *
-	 * Take Unix timestamp and format to iCal date/time string
-	 *
-	 * @param int $datetime Unix timestamp, leave blank for current date/time
-	 *
-	 * @return string formatted iCal date/time string
-	 * @deprecated Use ZDateHelper::fromUnixDateTimetoiCal() instead
-	 */
-	public static function fromUnixDateTime($datetime = null)
-		{
-		date_default_timezone_set('UTC');
-		if ($datetime == null)
-			{
-			$datetime = time();
-			}
-		return date('Ymd\THis', $datetime);
-		}
-
-	/**
-	 * fromUnixDate()
-	 *
-	 * Take Unix timestamp and format to iCal date string
-	 *
-	 * @param int $datetime Unix timestamp, leave blank for current date/time
-	 *
-	 * @return string formatted iCal date string
-	 * @deprecated Use ZDateHelper::fromUnixDateTimetoiCal() instead
-	 */
-	public static function fromUnixDate($datetime = null)
-		{
-		date_default_timezone_set('UTC');
-		if ($datetime == null)
-			{
-			$datetime = time();
-			}
-		return date('Ymd', $datetime);
+		return $content;
 		}
 
 	/**
@@ -480,29 +313,187 @@ class ZCiCal
 			return sprintf('%04d%02d%02dT%02d%02d%02d', substr($datetime, 0, 4), substr($datetime, 5, 2), substr($datetime, 8, 2),
 																							 substr($datetime, 11, 2), substr($datetime, 14, 2), substr($datetime, 17, 2));
 			}
+
 		return sprintf('%04d%02d%02d', substr($datetime, 0, 4), substr($datetime, 5, 2), substr($datetime, 8, 2));
 		}
 
 	/**
-	 * Format iCal time format to either SQL date or SQL date-time format
+	 * fromUnixDate()
 	 *
-	 * @param string $datetime icalendar formatted date or date-time
+	 * Take Unix timestamp and format to iCal date string
 	 *
-	 * @return string SQL date or SQL date-time string
-	 * @deprecated Use ZDateHelper::toSQLDateTime() instead
+	 * @param int $datetime Unix timestamp, leave blank for current date/time
+	 *
+	 * @return string formatted iCal date string
+	 * @deprecated Use ZDateHelper::fromUnixDateTimetoiCal() instead
 	 */
-	public static function toSQLDateTime($datetime = '')
+	public static function fromUnixDate($datetime = null)
 		{
-		if ($datetime == '')
+		date_default_timezone_set('UTC');
+		if ($datetime == null)
 			{
-			return ZDateHelper::toSQLDateTime();
+			$datetime = time();
 			}
-		if (strlen($datetime) > 10)
+
+		return date('Ymd', $datetime);
+		}
+
+	/**
+	 * fromUnixDateTime()
+	 *
+	 * Take Unix timestamp and format to iCal date/time string
+	 *
+	 * @param int $datetime Unix timestamp, leave blank for current date/time
+	 *
+	 * @return string formatted iCal date/time string
+	 * @deprecated Use ZDateHelper::fromUnixDateTimetoiCal() instead
+	 */
+	public static function fromUnixDateTime($datetime = null)
+		{
+		date_default_timezone_set('UTC');
+		if ($datetime == null)
 			{
-			return sprintf('%04d-%02d-%02d %02d:%02d:%02d', substr($datetime, 0, 4), substr($datetime, 5, 2), substr($datetime, 8, 2),
-																							 substr($datetime, 11, 2), substr($datetime, 14, 2), substr($datetime, 17, 2));
+			$datetime = time();
 			}
-		return sprintf('%04d-%02d-%02d', substr($datetime, 0, 4), substr($datetime, 5, 2), substr($datetime, 8, 2));
+
+		return date('Ymd\THis', $datetime);
+		}
+
+	/**
+	 * Get first child in object list
+	 * Use getNextSibling() and getPreviousSibling() to navigate through list
+	 *
+	 * @param object $thisnode The parent object
+	 *
+	 * @return object The child object
+	 */
+	public function getFirstChild($thisnode)
+		{
+		if (count($thisnode->child) > 0)
+			{
+			//echo 'moving from ' . $thisnode->getName() . ' to ' . $thisnode->child[0]->getName() . '<br/>';
+			return $thisnode->child[0];
+			}
+
+		return null;
+		}
+
+	/**
+	 * Get first event in object list
+	 * Use getNextEvent() to navigate through list
+	 *
+	 * @return object The first event, or null
+	 */
+	public function getFirstEvent()
+		{
+		if ($this->countEvents() > 0)
+			{
+			$child = $this->tree->child[0];
+			$event = false;
+			while (! $event && $child != null)
+				{
+				if ($child->getName() == 'VEVENT')
+					{
+					$event = true;
+					}
+				else
+					{
+					$child = $child->next;
+					}
+				}
+
+			return $child;
+			}
+
+		return null;
+		}
+
+	/**
+	 * Get first venue in object list
+	 * Use getNextVenue() to navigate through list
+	 *
+	 * @return object The first venue, or null
+	 */
+	public function getFirstVenue()
+		{
+		if ($this->countVenues() > 0)
+			{
+			$child = $this->tree->child[0];
+			$event = false;
+			while (! $event && $child != null)
+				{
+				if ($child->getName() == 'VVENUE')
+					{
+					$event = true;
+					}
+				else
+					{
+					$child = $child->next;
+					}
+				}
+
+			return $child;
+			}
+
+		return null;
+		}
+
+	/**
+	 * Get next event in object list
+	 *
+	 * @param object $event The current event object
+	 *
+	 * @return object Returns the next event or null if past last event
+	 */
+	public function getNextEvent($event)
+		{
+		do
+			{
+			$event = $event->next;
+			} while ($event != null && $event->getName() != 'VEVENT');
+
+		return $event;
+		}
+
+	/**
+	 * Get next sibling in object list
+	 *
+	 * @param object $thisnode The current object
+	 *
+	 * @return object Returns the next sibling
+	 */
+	public function getNextSibling($thisnode)
+		{
+		return $thisnode->next;
+		}
+
+	/**
+	 * Get next venue in object list
+	 *
+	 * @param object $venue The current venue object
+	 *
+	 * @return object Returns the next venue or null if past last venue
+	 */
+	public function getNextVenue($venue)
+		{
+		do
+			{
+			$venue = $venue->next;
+			} while ($venue != null && $venue->getName() != 'VVENUE');
+
+		return $venue;
+		}
+
+	/**
+	 * Get previous sibling in object list
+	 *
+	 * @param object $thisnode The current object
+	 *
+	 * @return object Returns the previous sibling
+	 */
+	public function getPrevSibling($thisnode)
+		{
+		return $thisnode->prev;
 		}
 
 	/**
@@ -516,7 +507,7 @@ class ZCiCal
 	 */
 	public static function getTZValues($node)
 		{
-		$tzvalues = array();
+		$tzvalues = [];
 
 		$tnode = @$node->data['TZOFFSETFROM'];
 		if ($tnode != null)
@@ -550,7 +541,7 @@ class ZCiCal
 		if ($tnode != null)
 			{
 			$tzvalues['rrule'] = $tnode->getValues();
-			//echo 'rule: ' . $tzvalues['rrule'] . '<br/>\n';
+		//echo 'rule: ' . $tzvalues['rrule'] . '<br/>\n';
 			}
 		else
 			{
@@ -565,18 +556,53 @@ class ZCiCal
 		}
 
 	/**
-	 * Escape slashes, commas and semicolons in strings
+	 * Format iCal time format to either SQL date or SQL date-time format
 	 *
-	 * @param string $content
+	 * @param string $datetime icalendar formatted date or date-time
 	 *
-	 * @return string
+	 * @return string SQL date or SQL date-time string
+	 * @deprecated Use ZDateHelper::toSQLDateTime() instead
 	 */
-	public static function formatContent($content)
+	public static function toSQLDateTime($datetime = '')
 		{
-		$content = str_replace(array('\\', ',', ';'), array('\\\\', '\\,', '\\;'), $content);
-		return $content;
+		if ($datetime == '')
+			{
+			return ZDateHelper::toSQLDateTime();
+			}
+		if (strlen($datetime) > 10)
+			{
+			return sprintf('%04d-%02d-%02d %02d:%02d:%02d', substr($datetime, 0, 4), substr($datetime, 5, 2), substr($datetime, 8, 2),
+																							 substr($datetime, 11, 2), substr($datetime, 14, 2), substr($datetime, 17, 2));
+			}
+
+		return sprintf('%04d-%02d-%02d', substr($datetime, 0, 4), substr($datetime, 5, 2), substr($datetime, 8, 2));
 		}
 
+	/**
+	 * Read date/time in iCal formatted string
+	 *
+	 * @param string iCal formated date/time string
+	 *
+	 * @return int Unix timestamp
+	 * @deprecated Use ZDateHelper::toUnixDateTime() instead
+	 */
+	public function toUnixDateTime($datetime)
+		{
+		$year = substr($datetime, 0, 4);
+		$month = substr($datetime, 4, 2);
+		$day = substr($datetime, 6, 2);
+		$hour = 0;
+		$minute = 0;
+		$second = 0;
+		if (strlen($datetime) > 8 && $datetime{8} == 'T')
+			{
+			$hour = substr($datetime, 9, 2);
+			$minute = substr($datetime, 11, 2);
+			$second = substr($datetime, 13, 2);
+			}
+
+		return mktime($hour, $minute, $second, $month, $day, $year);
+		}
 	}
 
 

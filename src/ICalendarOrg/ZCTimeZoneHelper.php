@@ -31,13 +31,13 @@ class ZCTimeZoneHelper
 	 */
 	public static function getTZNode($startyear, $endyear, $tzid, $parentnode)
 		{
-		$tzmins = array();
-		$tzmaxs = array();
-		if (!array_key_exists($tzid, $tzmins) || $tzmins[$tzid] > $startyear)
+		$tzmins = [];
+		$tzmaxs = [];
+		if (! array_key_exists($tzid, $tzmins) || $tzmins[$tzid] > $startyear)
 			{
 			$tzmins[$tzid] = $startyear;
 			}
-		if (!array_key_exists($tzid, $tzmaxs) || $tzmaxs[$tzid] < $endyear)
+		if (! array_key_exists($tzid, $tzmaxs) || $tzmaxs[$tzid] < $endyear)
 			{
 			$tzmaxs[$tzid] = $endyear;
 			}
@@ -67,7 +67,7 @@ class ZCTimeZoneHelper
 				// not enough transitions found, probably UTC
 				// lets add fake transition at end for those systems that need it (i.e. Outlook)
 
-				$t2 = array();
+				$t2 = [];
 				$t2['isdst'] = $transitions[0]['isdst'];
 				$t2['offset'] = $transitions[0]['offset'];
 				$t2['ts'] = $tstart;
@@ -131,7 +131,7 @@ class ZCTimeZoneHelper
 				$lasttransition = $transition;
 				}
 			}
+
 		return $tzobj;
 		}
-
 	}
