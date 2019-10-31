@@ -48,7 +48,6 @@ class ZCiCalDataNode
 	 */
 	public function __construct($line)
 		{
-		//echo "ZCiCalDataNode($line)<br/>\n";
 		//separate line into parameters and value
 		// look for colon separating name or parameter and value
 		// first change any escaped colons temporarily to make it easier
@@ -59,7 +58,6 @@ class ZCiCalDataNode
 		$inquotes = false;
 		while (! $datafind && ($i < strlen($tline)))
 			{
-			//echo "$i: " . $tline{$i} . ", ord() = " . ord($tline{$i}) . "<br>\n";
 			if (! $inquotes && $tline{$i} == ':')
 				{
 				$datafind = true;
@@ -79,7 +77,6 @@ class ZCiCalDataNode
 			// fix escaped characters (don't see double quotes in spec but Apple apparently uses it in iCal)
 			$value = str_replace(['\\N', '\\n', '\\"'], ["\n", "\n", '"'], $value);
 			$tvalue = str_replace('\\,', '`~', $value);
-			//echo 'value: ' . $tvalue . "<br>\n";
 			$tvalue = explode(',', $tvalue);
 			$value = str_replace('`~', '\\,', $tvalue);
 			$this->value = $value;
@@ -99,10 +96,8 @@ class ZCiCalDataNode
 				$param = substr($parameter, 0, $pos);
 				$paramvalue = substr($parameter, $pos + 1);
 				$tvalue = str_replace('\\,', '`~', $paramvalue);
-				//$tvalue = explode(',',$tvalue);
 				$paramvalue = str_replace('`~', '\\,', $tvalue);
 				$this->parameter[strtolower($param)] = $paramvalue;
-				//$this->paramvalue[] = $paramvalue;
 				}
 			}
 		}

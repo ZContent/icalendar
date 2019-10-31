@@ -1,28 +1,21 @@
-# Zap Calendar iCalendar Library
+# Zap Calendar iCalendar Library [![Build Status](https://travis-ci.org/phpfui/icalendar.png?branch=master)](https://travis-ci.org/phpfui/icalendar)
 
-(https://github.com/zcontent/icalendar)
+## A modern 7.1 namespaced fork of [Zap Calendar iCalendar Library](https://github.com/zcontent/icalendar)
 
 The Zap Calendar iCalendar Library is a PHP library for supporting the iCalendar (RFC 5545) standard.
 
-This PHP library is for reading and writing iCalendar formatted feeds and
-files. Features of the library include:
+This PHP library is for reading and writing iCalendar formatted feeds and files. Features of the library include:
 
 - Read AND write support for iCalendar files
 - Object based creation and manipulation of iCalendar files
 - Supports expansion of RRULE to a list of repeating dates
 - Supports adding timezone info to iCalendar file
 
-All iCalendar data is stored in a PHP object tree.
-This allows any property to be added to the iCalendar feed without
-requiring specialized library function calls.
-With power comes responsibility.  Missing or invalid properties can cause
-the resulting iCalendar file to be invalid. Visit [iCalendar.org](http://icalendar.org) to view valid
-properties and test your feed using the site's [iCalendar validator tool](http://icalendar.org/validator.html).
+All iCalendar data is stored in a PHP object tree. This allows any property to be added to the iCalendar feed without requiring specialized library function calls. With power comes responsibility.  Missing or invalid properties can cause the resulting iCalendar file to be invalid. Visit [iCalendar.org](http://icalendar.org) to view valid properties and test your feed using the site's [iCalendar validator tool](http://icalendar.org/validator.html).
 
 Library API documentation can be found at http://icalendar.org/zapcallibdocs
 
-See the examples folder for programs that read and write iCalendar files.
-Best to include the sample files into a file with an active autoloader or include all the classes to run the examples directly.
+See the examples folder for programs that read and write iCalendar files. Best to include the sample files into a file with an active autoloader or include all the classes to run the examples directly.
 
 Create an ical object using the ZCiCal object:
 
@@ -52,9 +45,7 @@ Write the object in iCalendar format using the  export() function call:
 echo $icalobj->export();
 ```
 
-This example will not validate since it is missing some required elements.
-Look at the simpleevent.php example for the minimum # of elements
-needed for a validated iCalendar file.
+This example will not validate since it is missing some required elements. Look at the simpleevent.php example for the minimum # of elements needed for a validated iCalendar file.
 
 To create a multi-event iCalendar file, simply create multiple event objects. For example:
 
@@ -109,11 +100,7 @@ foreach($icalobj->tree->child as $node)
 
 ## Known Limitations
 
-- Since the library utilizes objects to read and write iCalendar data, the
-size of the iCalendar data is limited to the amount of available memory on the machine.
-The ZCiCal() object supports reading a range of events to minimize memory space.
-- The library ignores timezone info when importing files, instead utilizing PHP's timezone
-library for calculations (timezones are supported when exporting files).
-Imported timezones need to be aliased to a [PHP supported timezone](http://php.net/manual/en/timezones.php).
+- Since the library utilizes objects to read and write iCalendar data, the size of the iCalendar data is limited to the amount of available memory on the machine. The ZCiCal() object supports reading a range of events to minimize memory space.
+- The library ignores timezone info when importing files, instead utilizing PHP's timezone library for calculations (timezones are supported when exporting files). Imported timezones need to be aliased to a [PHP supported timezone](http://php.net/manual/en/timezones.php).
 - At this time, the library does not support the "BYSETPOS" option in RRULE items.
 

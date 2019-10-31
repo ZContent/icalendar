@@ -61,8 +61,6 @@ class ZCiCal
 			$eventpos = 0;
 			foreach ($lines as $line)
 				{
-				//$line = str_replace("!?", "\n", $line); // add nl back into descriptions
-				// echo ($linecount + 1) . ': ' . $line . '<br/>';
 				if (substr($line, 0, 6) == 'BEGIN:')
 					{
 					// start new object
@@ -86,13 +84,6 @@ class ZCiCal
 							$this->tree = $this->curnode;
 							}
 						}
-					//echo 'new node: ' . $this->curnode->name . "<br/>\n";
-					/*
-					if($this->curnode->getParent() != null)
-						echo 'parent of ' . $this->curnode->getName() . ' is ' . $this->curnode->getParent()->getName() . '<br/>';
-					else
-						echo 'parent of ' . $this->curnode->getName() . ' is null<br/>';
-					*/
 					}
 				elseif (substr($line, 0, 4) == 'END:')
 					{
@@ -104,16 +95,11 @@ class ZCiCal
 							$eventcount++;
 							if ($this->curnode->getName() != $name)
 								{
-								//panic, mismatch in iCal structure
-								//die('Can't read iCal file structure, expecting ' . $this->curnode->getName() . " but reading $name instead");
 								throw new \Exception("Can't read iCal file structure, expecting " . $this->curnode->getName() . ' but reading $name instead');
 								}
 							if ($this->curnode->getParent() != null)
 								{
-								//echo 'moving up from ' . $this->curnode->getName() ;
 								$this->curnode = $this->curnode->getParent();
-								//echo ' to ' . $this->curnode->getName() . '<br/>';
-								//echo $this->curnode->getName() . ' has ' . count($this->curnode->child) . ' children<br/>';
 								}
 							}
 						$eventpos++;
@@ -122,16 +108,11 @@ class ZCiCal
 						{
 						if ($this->curnode->getName() != $name)
 							{
-							//panic, mismatch in iCal structure
-							//die('Can't read iCal file structure, expecting ' . $this->curnode->getName() . ' but reading $name instead');
 							throw new \Exception("Can't read iCal file structure, expecting " . $this->curnode->getName() . ' but reading $name instead');
 							}
 						if ($this->curnode->getParent() != null)
 							{
-							//echo 'moving up from ' . $this->curnode->getName() ;
 							$this->curnode = $this->curnode->getParent();
-							//echo ' to ' . $this->curnode->getName() . '<br/>';
-							//echo $this->curnode->getName() . ' has ' . count($this->curnode->child) . ' children<br/>';
 							}
 						}
 					}
@@ -371,7 +352,6 @@ class ZCiCal
 		{
 		if (count($thisnode->child) > 0)
 			{
-			//echo 'moving from ' . $thisnode->getName() . ' to ' . $thisnode->child[0]->getName() . '<br/>';
 			return $thisnode->child[0];
 			}
 
@@ -541,7 +521,6 @@ class ZCiCal
 		if ($tnode != null)
 			{
 			$tzvalues['rrule'] = $tnode->getValues();
-		//echo 'rule: ' . $tzvalues['rrule'] . '<br/>\n';
 			}
 		else
 			{

@@ -102,12 +102,6 @@ class ZCiCalNode
 				$this->parentnode->child[] = & $this;
 				}
 			}
-		/*
-		echo 'creating ' . $this->getName();
-		if($_parent != null)
-			echo ' child of ' . $_parent->getName() . '/' . count($this->parentnode->child);
-		echo '<br/>';
-		*/
 		}
 
 	/**
@@ -229,7 +223,6 @@ class ZCiCalNode
 		{
 		if (count($this->child) > 0)
 			{
-			//echo 'moving from ' . $this->getName() . ' to ' . $this->child[0]->getName() . '<br/>';
 			return $this->child[0];
 			}
 

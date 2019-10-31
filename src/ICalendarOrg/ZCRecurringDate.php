@@ -194,7 +194,6 @@ class ZCRecurringDate
 			foreach ($rules as $rule)
 				{
 				$item = explode('=', $rule);
-				//echo $item[0] . '=' . $item[1] . "<br/>\n";
 				switch ($item[0])
 					{
 					case 'FREQ':

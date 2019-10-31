@@ -46,7 +46,6 @@ class ZDateHelper
 		$tdate['seconds'] = substr($sqldate, 17, 2);
 		$newdate = mktime($tdate['hours'] + $hour, $tdate['minutes'] + $min, $tdate['seconds'] + $sec, $tdate['mon'] + $month, $tdate['mday'] + $day, $tdate['year'] + $year);
 		date_default_timezone_set('UTC');
-		//echo self::toSQLDateTime($date) . ' => ' . self::toSQLDateTime($newdate) . " ($hour:$min:$sec $month/$day/$year)<br/>\n";
 		return $newdate;
 		}
 
@@ -198,7 +197,7 @@ class ZDateHelper
 		}
 
 	/**
-	 * Date math: get date from week and day in specifiec month
+	 * Date math: get date from week and day in specific month
 	 *
 	 * This routine finds actual dates for the second Tuesday of the month, last Friday of the month, etc.
 	 * For second Tuesday, use $week = 1, $wday = 2
@@ -213,7 +212,6 @@ class ZDateHelper
 	 */
 	public static function getDateFromDay($date, $week, $wday, $tzid = 'UTC')
 		{
-		//echo 'getDateFromDay(' . self::toSQLDateTime($date) . ",$week,$wday)<br/>\n";
 		// determine first day in month
 		$tdate = getdate($date);
 		$monthbegin = gmmktime(0, 0, 0, $tdate['mon'], 1, $tdate['year']);
@@ -224,7 +222,6 @@ class ZDateHelper
 			{
 			$tdate = getdate($day);
 			$month[$tdate['wday']][] = $day;
-			//echo self::toSQLDateTime($day) . "<br/>\n";
 			$day = self::addDate($day, 0, 0, 0, 0, 1, 0, $tzid); // add 1 day
 			}
 		$dayinmonth = 0;
@@ -236,8 +233,7 @@ class ZDateHelper
 			{
 			$dayinmonth = $month[$wday][count($month[$wday]) - 1];
 			}
-		//echo 'return ' . self::toSQLDateTime($dayinmonth);
-		//exit;
+
 		return $dayinmonth;
 		}
 
@@ -313,6 +309,27 @@ class ZDateHelper
 		}
 
 	/**
+	 * Return now as DateTime
+	 *
+	 * @param string $tzid PHP recognized timezone (default is UTC)
+	 *
+	 * @return DateTime
+	 */
+	public static function DTNow($tzid)
+		{
+		try
+			{
+			$dtz = new \DateTimeZone($tzid);
+			}
+		catch (\Exception $e)
+			{
+			$dtz = null;
+			}
+
+		return new \DateTime('now', $dtz);
+		}
+
+	/**
 	 * Is given date after today?
 	 *
 	 * @param int $date date in Unix timestamp format
@@ -322,12 +339,11 @@ class ZDateHelper
 	 */
 	public static function isAfterToday($date, $tzid = 'UTC')
 		{
-		$dtz = new \DateTimeZone($tzid);
-		$dt = new \DateTime('now', $dtz);
-		$now = time() + $dtz->getOffset($dt);
+		$dt = self::DTNow($tzid);
+		$now = time() + $dt->getTimezone()->getOffset($dt);
 
 		return mktime(0, 0, 0, date('m', $now), date('d', $now), date('Y', $now)) <
-							 mktime(0, 0, 0, date('m', $date), date('d', $date), date('Y', $now));
+							 mktime(0, 0, 0, date('m', $date), date('d', $date), date('Y', $date));
 		}
 
 	/**
@@ -340,12 +356,11 @@ class ZDateHelper
 	 */
 	public static function isBeforeToday($date, $tzid = 'UTC')
 		{
-		$dtz = new \DateTimeZone($tzid);
-		$dt = new \DateTime('now', $dtz);
-		$now = time() + $dtz->getOffset($dt);
+		$dt = self::DTNow($tzid);
+		$now = time() + $dt->getTimezone()->getOffset($dt);
 
 		return mktime(0, 0, 0, date('m', $now), date('d', $now), date('Y', $now)) >
-							 mktime(0, 0, 0, date('m', $date), date('d', $date), date('Y', $now));
+							 mktime(0, 0, 0, date('m', $date), date('d', $date), date('Y', $date));
 		}
 
 	/**
@@ -361,9 +376,8 @@ class ZDateHelper
 	 */
 	public static function isFuture($date, $tzid = 'UTC')
 		{
-		$dtz = new \DateTimeZone($tzid);
-		$dt = new \DateTime('now', $dtz);
-		$now = time() + $dtz->getOffset($dt);
+		$dt = self::DTNow($tzid);
+		$now = time() + $dt->getTimezone()->getOffset($dt);
 
 		return $date > $now;
 		}
@@ -381,9 +395,8 @@ class ZDateHelper
 	 */
 	public static function isPast($date, $tzid = 'UTC')
 		{
-		$dtz = new \DateTimeZone($tzid);
-		$dt = new \DateTime('now', $dtz);
-		$now = time() + $dtz->getOffset($dt);
+		$dt = self::DTNow($tzid);
+		$now = time() + $dt->getTimezone()->getOffset($dt);
 
 		return $date < $now;
 		}
@@ -398,9 +411,8 @@ class ZDateHelper
 	 */
 	public static function isToday($date, $tzid = 'UTC')
 		{
-		$dtz = new \DateTimeZone($tzid);
-		$dt = new \DateTime('now', $dtz);
-		$now = time() + $dtz->getOffset($dt);
+		$dt = self::DTNow($tzid);
+		$now = time() + $dt->getTimezone()->getOffset($dt);
 
 		return gmdate('Y-m-d', $date) == gmdate('Y-m-d', $now);
 		}
@@ -415,9 +427,8 @@ class ZDateHelper
 	 */
 	public static function isTomorrow($date, $tzid = 'UTC')
 		{
-		$dtz = new \DateTimeZone($tzid);
-		$dt = new \DateTime('now', $dtz);
-		$now = time() + $dtz->getOffset($dt);
+		$dt = self::DTNow($tzid);
+		$now = time() + $dt->getTimezone()->getOffset($dt);
 
 		return gmdate('Y-m-d', $date) == gmdate('Y-m-d', $now + 60 * 60 * 24);
 		}
@@ -445,9 +456,8 @@ class ZDateHelper
 	 */
 	public static function now($tzid = 'UTC')
 		{
-		$dtz = new \DateTimeZone($tzid);
-		$dt = new \DateTime('now', $dtz);
-		$now = time() + $dtz->getOffset($dt);
+		$dt = self::DTNow($tzid);
+		$now = time() + $dt->getTimezone()->getOffset($dt);
 
 		return $now;
 		}
@@ -606,14 +616,15 @@ class ZDateHelper
 		date_default_timezone_set('UTC');
 		try
 			{
-			$date = new \DateTime($sqldate, $tzid);
+			$dtz = new \DateTimeZone($tzid);
+			$date = new \DateTime($sqldate, $dtz);
 			}
 		catch (\Exception $e)
 			{
 			// bad time zone specified
 			return $sqldate;
 			}
-		$offset = $date->getOffsetFromGMT();
+		$offset = $dtz->getOffset($date);
 		if ($offset >= 0)
 			{
 			$date->sub(new \DateInterval('PT' . $offset . 'S'));
@@ -623,6 +634,6 @@ class ZDateHelper
 			$date->add(new \DateInterval('PT' . abs($offset) . 'S'));
 			}
 
-		return $date->toSQL(true);
+		return $date->format('Y-m-d H:i:s');
 		}
 	}

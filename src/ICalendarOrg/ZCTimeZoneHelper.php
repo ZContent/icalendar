@@ -96,7 +96,6 @@ class ZCTimeZoneHelper
 				$ts = ZDateHelper::toUnixDateTime(ZDateHelper::toLocalDateTime(ZDateHelper::toSQLDateTime($transition['ts']), $tzid));
 				$datanode = new ZCiCalDataNode('DTSTART:' . ZDateHelper::toiCalDateTime($ts));
 				$tobj->data[$datanode->getName()] = $datanode;
-				//echo $ts . ' => ' . ZDateHelper::toICalDateTime($ts) . "<br/>\n"; exit;
 				$toffset = $lasttransition['offset'];
 				$thours = intval($toffset / 60 / 60);
 				$tmins = abs($toffset) / 60 - intval(abs($toffset) / 60 / 60) * 60;

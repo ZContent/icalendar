@@ -1,7 +1,7 @@
 {
     "name": "phpfui/icalendar",
     "type": "library",
-    "description": "ZapCalLib is the icalendar.org PHP implementation of rfc5545, management of iCal formatted files",
+    "description": "A modern fork of the icalendar.org PHP implementation of rfc5545, management of iCal formatted files",
     "keywords": [ "rfc2445",
                   "rfc5545",
                   "rfc6321",
@@ -22,10 +22,10 @@
     "homepage": "https://icalendar.org/php-library.html",
     "authors": [
         {
-            "name": "Dan Cogliano",
-            "email": "dan@zcontent.net"
+            "name": "Bruce Wells",
+            "email": "brucekwells@gmail.com"
         }
-    ],
+		],
     "autoload": {
         "psr-0": { "ICalendarOrg": ["src/"] }
     },
