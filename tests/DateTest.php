@@ -51,88 +51,46 @@ class DateTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals(strtotime('2019-1-1 01:02:03'), ZDateHelper::fromiCaltoUnixDateTime('20190101T010203'));
 		$this->assertEquals(strtotime('2019-1-1 01:02:03'), ZDateHelper::fromiCaltoUnixDateTime('20190101T010203Z'));
 		$this->assertEquals(strtotime('2020-3-1 01:02:03'), ZDateHelper::fromiCaltoUnixDateTime('20200301T010203Z'));
+		$this->assertEquals(strtotime('2040-3-1 03:02:01'), ZDateHelper::fromiCaltoUnixDateTime('20400301T030201Z'));
 		}
 
 	public function testFromUnixDateTimetoiCal() : void
 		{
 		$this->assertEquals('20190101T010203', ZDateHelper::fromUnixDateTimetoiCal(strtotime('2019-1-1 01:02:03')));
 		$this->assertEquals('20200301T010203', ZDateHelper::fromUnixDateTimetoiCal(strtotime('2020-3-1 01:02:03')));
+		$this->assertEquals('20400301T030201', ZDateHelper::fromUnixDateTimetoiCal(strtotime('2040-3-1 03:02:01')));
 		}
 
-//	/**
-//	 * Convert from a relative date to an absolute date
-//	 *
-//	 * Examples of relative dates are '-2y' for 2 years ago, '18m'
-//	 * for 18 months after today. Relative date uses 'y', 'm' and 'd' for
-//	 * year, month and day. Relative date can be combined into comma
-//	 * separated list, i.e., '-1y,-1d' for 1 year and 1 day ago.
-//	 *
-//	 * @param string $date relative date string (i.e. '1y' for 1 year from today)
-//	 * @param string $rdate reference date, or blank for current date (in SQL date-time format)
-//	 *
-//	 * @return string in SQL date-time format
-//	 */
-////	public static function getAbsDate($date, $rdate = '')
-//
-//	public function testGetAbsDate() : void
-//		{
-//			return gmdate('Y-m-d H:i:s', self::now());
-//		$this->assertEquals('2019-01-01 01:02:03', ZDateHelper::getAbsDate('+1d,+1h', '2018-12-31 01:02:03'));
-//		if (str_replace(['y', 'm', 'd', 'h', 'n'], '', strtolower($date)) != strtolower($date))
-//			{
-//			date_default_timezone_set('UTC');
-//			if ($rdate == '')
-//				{
-//				$udate = time();
-//				}
-//			else
-//				{
-//				$udate = self::toUnixDateTime($rdate);
-//				}
-//			$values = explode(',', strtolower($date));
-//			$y = 0;
-//			$m = 0;
-//			$d = 0;
-//			$h = 0;
-//			$n = 0;
-//			foreach ($values as $value)
-//				{
-//				$rtype = substr($value, strlen($value) - 1);
-//				$rvalue = intval(substr($value, 0, strlen($value) - 1));
-//				switch ($rtype)
-//					{
-//					case 'y':
-//						$y = $rvalue;
-//						break;
-//					case 'm':
-//						$m = $rvalue;
-//						break;
-//					case 'd':
-//						$d = $rvalue;
-//						break;
-//					case 'h':
-//						$h = $rvalue;
-//						break;
-//					case 'n':
-//						$n = $rvalue;
-//						break;
-//					}
-//				// for '-' values, move to start of day , otherwise, move to end of day
-//				if ($rvalue[0] == '-')
-//					{
-//					$udate = mktime(0, 0, 0, date('m', $udate), date('d', $udate), date('Y', $udate));
-//					}
-//				else
-//					{
-//					$udate = mktime(0, -1, 0, date('m', $udate), date('d', $udate) + 1, date('Y', $udate));
-//					}
-//				$udate = self::addDate($udate, $h, $n, 0, $m, $d, $y);
-//				}
-//			$date = self::toSQLDateTime($udate);
-//			}
-//
-//		return $date;
-//		}
+	public function testGetAbsDate() : void
+		{
+		$this->assertEquals('2019-01-01 01:02:03', ZDateHelper::getAbsDate('+1d', '2018-12-31 01:02:03'));
+		$this->assertEquals('2019-12-31 01:02:03', ZDateHelper::getAbsDate('+1y', '2018-12-31 01:02:03'));
+		$this->assertEquals('2019-01-31 01:02:03', ZDateHelper::getAbsDate('+1m', '2018-12-31 01:02:03'));
+		$this->assertEquals('2018-12-31 02:02:03', ZDateHelper::getAbsDate('+1h', '2018-12-31 01:02:03'));
+		$this->assertEquals('2018-12-31 01:03:03', ZDateHelper::getAbsDate('+1n', '2018-12-31 01:02:03'));
+
+		$this->assertEquals('2018-12-31 01:02:03', ZDateHelper::getAbsDate('-1d', '2019-01-01 01:02:03'));
+		$this->assertEquals('2018-12-31 01:02:03', ZDateHelper::getAbsDate('-1y', '2019-12-31 01:02:03'));
+		$this->assertEquals('2018-12-31 01:02:03', ZDateHelper::getAbsDate('-1m', '2019-01-31 01:02:03'));
+		$this->assertEquals('2018-12-31 01:02:03', ZDateHelper::getAbsDate('-1h', '2018-12-31 02:02:03'));
+		$this->assertEquals('2018-12-31 01:02:03', ZDateHelper::getAbsDate('-1n', '2018-12-31 01:03:03'));
+
+		$this->assertEquals('2019-01-01 02:02:03', ZDateHelper::getAbsDate('+1d,+1h', '2018-12-31 01:02:03'));
+		$this->assertEquals('2019-01-01 02:02:04', ZDateHelper::getAbsDate('+1d,+1h,+1s', '2018-12-31 01:02:03'));
+		$this->assertEquals('2019-01-01 02:03:04', ZDateHelper::getAbsDate('+1d,+1h,+1n,+1s', '2018-12-31 01:02:03'));
+		$this->assertEquals('2019-02-01 02:03:04', ZDateHelper::getAbsDate('+1m,+1d,+1h,+1n,+1s', '2018-12-31 01:02:03'));
+		$this->assertEquals('2020-02-01 02:03:04', ZDateHelper::getAbsDate('+1y,+1m,+1d,+1h,+1n,+1s', '2018-12-31 01:02:03'));
+		$this->assertEquals('2029-02-01 02:03:04', ZDateHelper::getAbsDate('+10y,+1m,+1d,+1h,+1n,+1s', '2018-12-31 01:02:03'));
+		$this->assertEquals('2049-02-01 02:03:04', ZDateHelper::getAbsDate('+30y,+1m,+1d,+1h,+1n,+1s', '2018-12-31 01:02:03'));
+
+		$this->assertEquals('2018-12-31 01:02:03', ZDateHelper::getAbsDate('-1d,-1h', '2019-01-01 02:02:03'));
+		$this->assertEquals('2018-12-31 01:02:03', ZDateHelper::getAbsDate('-1d,-1h,-1s', '2019-01-01 02:02:04'));
+		$this->assertEquals('2018-12-31 01:02:03', ZDateHelper::getAbsDate('-1d,-1h,-1n,-1s', '2019-01-01 02:03:04'));
+		$this->assertEquals('2018-12-31 01:02:03', ZDateHelper::getAbsDate('-1m,-1d,-1h,-1n,-1s', '2019-02-01 02:03:04'));
+		$this->assertEquals('2018-12-31 01:02:03', ZDateHelper::getAbsDate('-1y,-1m,-1d,-1h,-1n,-1s', '2020-02-01 02:03:04'));
+		$this->assertEquals('2018-12-31 01:02:03', ZDateHelper::getAbsDate('-10y,-1m,-1d,-1h,-1n,-1s', '2029-02-01 02:03:04'));
+		$this->assertEquals('2018-12-31 01:02:03', ZDateHelper::getAbsDate('-30y,-1m,-1d,-1h,-1n,-1s', '2049-02-01 02:03:04'));
+		}
 
 	public function testGetDateFromDay() : void
 		{
@@ -174,6 +132,7 @@ class DateTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals(false, ZDateHelper::isAfterToday(time()));
 		$this->assertEquals(true, ZDateHelper::isAfterToday(time() + 60 * 60 * 24));
 		$this->assertEquals(true, ZDateHelper::isAfterToday(strtotime('2035-10-30')));
+		$this->assertEquals(true, ZDateHelper::isAfterToday(strtotime('2055-10-30')));
 		}
 
 	public function testIsBeforeToday() : void
@@ -181,6 +140,7 @@ class DateTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals(true, ZDateHelper::isBeforeToday(strtotime('2019-10-30')));
 		$this->assertEquals(false, ZDateHelper::isBeforeToday(time()));
 		$this->assertEquals(false, ZDateHelper::isBeforeToday(strtotime('2035-10-30')));
+		$this->assertEquals(false, ZDateHelper::isBeforeToday(strtotime('2055-10-30')));
 		}
 
 	public function testIsFuture() : void

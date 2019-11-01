@@ -1,11 +1,12 @@
 {
     "name": "phpfui/icalendar",
     "type": "library",
-    "description": "A modern fork of the icalendar.org PHP implementation of rfc5545, management of iCal formatted files",
+    "description": "A modern namespaced fork of the icalendar.org PHP implementation of RFC5545 iCalendar formatted files",
     "keywords": [ "rfc2445",
                   "rfc5545",
                   "rfc6321",
                   "management",
+                  "icalendar",
                   "calendar",
                   "vCalendar",
                   "vevent",
@@ -30,7 +31,9 @@
         "psr-0": { "ICalendarOrg": ["src/"] }
     },
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.1"
+    },
+    "require-dev": {
         "phpunit/phpunit": "^8.4"
     }
 }

@@ -131,7 +131,8 @@ class ZDateHelper
 	 * Examples of relative dates are '-2y' for 2 years ago, '18m'
 	 * for 18 months after today. Relative date uses 'y', 'm' and 'd' for
 	 * year, month and day. Relative date can be combined into comma
-	 * separated list, i.e., '-1y,-1d' for 1 year and 1 day ago.
+	 * separated list, i.e., '-1y,-1d' for 1 year and 1 day ago. Use 'h', 'n', 's' for
+	 * hour, minute and second.
 	 *
 	 * @param string $date relative date string (i.e. '1y' for 1 year from today)
 	 * @param string $rdate reference date, or blank for current date (in SQL date-time format)
@@ -140,7 +141,8 @@ class ZDateHelper
 	 */
 	public static function getAbsDate($date, $rdate = '')
 		{
-		if (str_replace(['y', 'm', 'd', 'h', 'n'], '', strtolower($date)) != strtolower($date))
+		// if $date is a proper relative format
+		if (str_replace(['y', 'm', 'd', 'h', 'n', 's'], '', strtolower($date)) != strtolower($date))
 			{
 			date_default_timezone_set('UTC');
 			if ($rdate == '')
@@ -157,6 +159,7 @@ class ZDateHelper
 			$d = 0;
 			$h = 0;
 			$n = 0;
+			$s = 0;
 			foreach ($values as $value)
 				{
 				$rtype = substr($value, strlen($value) - 1);
@@ -178,18 +181,12 @@ class ZDateHelper
 					case 'n':
 						$n = $rvalue;
 						break;
+					case 's':
+						$s = $rvalue;
+						break;
 					}
-				// for '-' values, move to start of day , otherwise, move to end of day
-				if ($rvalue[0] == '-')
-					{
-					$udate = mktime(0, 0, 0, date('m', $udate), date('d', $udate), date('Y', $udate));
-					}
-				else
-					{
-					$udate = mktime(0, -1, 0, date('m', $udate), date('d', $udate) + 1, date('Y', $udate));
-					}
-				$udate = self::addDate($udate, $h, $n, 0, $m, $d, $y);
 				}
+			$udate = self::addDate($udate, $h, $n, $s, $m, $d, $y);
 			$date = self::toSQLDateTime($udate);
 			}
 
