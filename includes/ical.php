@@ -35,7 +35,7 @@ class ZCiCalDataNode {
 
 	/**
 	 * Node values (after the colon ":")
-	 * 
+	 *
 	 * @var array
 	 */
 	var $value=array();
@@ -60,7 +60,7 @@ class ZCiCalDataNode {
 		$inquotes = false;
 		while(!$datafind && ($i < strlen($tline))) {
 			//echo "$i: " . $tline{$i} . ", ord() = " . ord($tline{$i}) . "<br>\n";
-			if(!$inquotes && $tline{$i} == ':')
+			if(!$inquotes && $tline[$i] == ':')
 				$datafind=true;
 			else{
 				$i += 1;
@@ -113,7 +113,7 @@ class ZCiCalDataNode {
 /**
  * Get $ith parameter from array
  * @param int $i
- * 
+ *
  * @return var
  */
 	function getParameter($i){
@@ -131,7 +131,7 @@ class ZCiCalDataNode {
 
 /**
  * Get comma separated values
- * 
+ *
  * @return string
  */
 	function getValues(){
@@ -350,7 +350,7 @@ class ZCiCalNode {
 	 * export tree to icalendar format
 	 *
 	 * @param object $node Top level node to export
-	 * 
+	 *
 	 * @param int $level Level of recursion (usually leave this blank)
 	 *
 	 * @return string iCalendar formatted output
@@ -436,7 +436,7 @@ class ZCiCalNode {
 	function printDataLine($d, $p)
 	{
 		$txtstr = "";
-	
+
 		$values = $d->getValues();
 		// don't think we need this, Sunbird does not like it in the EXDATE field
 		//$values = str_replace(",", "\\,", $values);
@@ -473,7 +473,7 @@ class ZCiCal {
 	 */
 	var $tree=null;
 	/**
-	 * The most recently created  node in the tree 
+	 * The most recently created  node in the tree
 	 *
 	 * @var object
 	 */
@@ -838,7 +838,7 @@ function toUnixDateTime($datetime){
 	$hour = 0;
 	$minute = 0;
 	$second = 0;
-	if(strlen($datetime) > 8 && $datetime{8} == "T") {
+	if(strlen($datetime) > 8 && $datetime[8] == "T") {
 		$hour = substr($datetime,9,2);
 		$minute = substr($datetime,11,2);
 		$second = substr($datetime,13,2);
@@ -849,7 +849,7 @@ function toUnixDateTime($datetime){
 
 /**
  * fromUnixDateTime()
- * 
+ *
  * Take Unix timestamp and format to iCal date/time string
  *
  * @param int $datetime Unix timestamp, leave blank for current date/time
@@ -868,7 +868,7 @@ static function fromUnixDateTime($datetime = null){
 
 /**
  * fromUnixDate()
- * 
+ *
  * Take Unix timestamp and format to iCal date string
  *
  * @param int $datetime Unix timestamp, leave blank for current date/time
@@ -886,7 +886,7 @@ static function fromUnixDate($datetime = null){
 
 /**
  * Format into iCal time format from SQL date or SQL date-time format
- * 
+ *
  * @param string $datetime SQL date or SQL date-time string
  *
  * @return string iCal formatted string
@@ -904,7 +904,7 @@ static function fromSqlDateTime($datetime = ""){
 
 /**
  * Format iCal time format to either SQL date or SQL date-time format
- * 
+ *
  * @param string $datetime icalendar formatted date or date-time
  * @return string SQL date or SQL date-time string
  * @deprecated Use ZDateHelper::toSqlDateTime() instead
