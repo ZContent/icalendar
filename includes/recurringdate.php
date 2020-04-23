@@ -733,7 +733,6 @@ class ZCRecurringDate {
 			$eventcount += $count;
 			if($maxdate > 0 && $maxdate < $nextdate)
 			{
-				array_pop($rdates);
 				$done = true;
 			}
 			else if($count == 0 && !$this->maxDates($rdates)){
