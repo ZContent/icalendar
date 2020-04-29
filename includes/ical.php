@@ -261,8 +261,7 @@ class ZCiCalNode {
 		{
 			if(!is_array($this->data[$node->getName()]))
 			{
-				$this->data[$node->getName()] = array();
-				$this->data[$node->getName()][] = $node;
+				$this->data[$node->getName()] = array($this->data[$node->getName()]);
 			}
 			$this->data[$node->getName()][] = $node;
 		}
