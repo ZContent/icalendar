@@ -59,7 +59,7 @@ class ZCiCalDataNode {
 		$datafind = false;
 		$inquotes = false;
 		while(!$datafind && ($i < strlen($tline))) {
-			//echo "$i: " . $tline[$i] . ", ord() = " . ord($tline{$i}) . "<br>\n";
+			//echo "$i: " . $tline[$i] . ", ord() = " . ord($tline[$i]) . "<br>\n";
 			if(!$inquotes && $tline[$i] == ':')
 				$datafind=true;
 			else{
