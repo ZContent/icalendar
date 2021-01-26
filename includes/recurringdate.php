@@ -1,7 +1,7 @@
 <?php
 /**
  * recurringdate.php - create list of dates from recurring rule
- * 
+ *
  * @package	ZapCalLib
  * @author	Dan Cogliano <http://zcontent.net>
  * @copyright   Copyright (C) 2006 - 2017 by Dan Cogliano
@@ -40,6 +40,13 @@ class ZCRecurringDate {
 	var $freq = null;
 
 	/**
+	 * start of week number (i.e. 0 for Sunday, 5 for Friday)
+	 *
+	 * @var integer
+	 */
+	var $weekstart = null;
+
+	/**
 	 * timezone of event (using PHP timezones)
 	 *
 	 * @var string
@@ -62,7 +69,7 @@ class ZCRecurringDate {
 
 	/**
 	 * repeat count when repeat mode is 'c'
-	 * 
+	 *
 	 * @var integer
 	 */
 	var $count=0;
@@ -150,7 +157,7 @@ class ZCRecurringDate {
 	 * @var array
 	 */
 	var $exdates=array();
-	
+
 /**
  * Expand recurring rule to a list of dates
  *
@@ -166,7 +173,7 @@ class ZCRecurringDate {
 			{
 				$exdates[$i] = ZDateHelper::toUnixDateTime(ZDateHelper::toLocalDateTime(ZDateHelper::toSQLDateTime($exdates[$i]),$tzid));
 			}
-	
+
 			$rules=str_replace("\'","",$rules);
 			$this->rules = $rules;
 			if($startdate == null){
@@ -177,7 +184,7 @@ class ZCRecurringDate {
 			$this->startdate = $startdate;
 			$this->tzid = $tzid;
 			$this->exdates = $exdates;
-	
+
 			$rules=explode(";", $rules);
 			$ruletype = "";
 			foreach($rules as $rule){
@@ -209,6 +216,34 @@ class ZCRecurringDate {
 								break;
 						}
 						break;
+					case "WKST":
+						switch($item[1]){
+							case 'SU':
+								$this->weekstart = 0;
+								break;
+							case 'MO':
+								$this->weekstart = 1;
+								break;
+							case 'TU':
+								$this->weekstart = 2;
+								break;
+							case 'WE':
+								$this->weekstart = 3;
+								break;
+							case 'TH':
+								$this->weekstart = 4;
+								break;
+							case 'FR':
+								$this->weekstart = 5;
+								break;
+							case 'SA':
+								$this->weekstart = 6;
+								break;
+							default:
+								$this->weekstart = 0;
+								break;
+						}
+					break;
 					case "INTERVAL":
 						$this->interval = $item[1];
 						break;
@@ -280,7 +315,7 @@ class ZCRecurringDate {
 			}
 		}
 	}
-	
+
 /**
  * bysetpos rule support
  *
@@ -303,11 +338,11 @@ class ZCRecurringDate {
  * save error
  *
  * @param string $msg
- */	
+ */
 	function setError($msg){
 		$this->error = $msg;
 	}
-	
+
 /**
  * get error message
  *
@@ -338,10 +373,10 @@ class ZCRecurringDate {
 		if($this->debug >= $level)
 			echo $msg . "<br/>\n";
 	}
-	
+
 /**
  * Get repeating dates by year
- * 
+ *
  * @param integer $startdate start date of repeating events, in Unix timestamp format
  * @param integer $enddate end date of repeating events, in Unix timestamp format
  * @param array $rdates array to contain expanded repeating dates
@@ -371,10 +406,10 @@ class ZCRecurringDate {
 		self::debug(1,"byYear() returned " . $count );
 		return $count;
 	}
-	
+
 /**
  * Get repeating dates by month
- * 
+ *
  * @param integer $startdate start date of repeating events, in Unix timestamp format
  * @param integer $enddate end date of repeating events, in Unix timestamp format
  * @param array $rdates array to contain expanded repeating dates
@@ -407,7 +442,7 @@ class ZCRecurringDate {
 
 /**
  * Get repeating dates by month day
- * 
+ *
  * @param integer $startdate start date of repeating events, in Unix timestamp format
  * @param integer $enddate end date of repeating events, in Unix timestamp format
  * @param array $rdates array to contain expanded repeating dates
@@ -443,10 +478,10 @@ class ZCRecurringDate {
 		self::debug(1,"byMonthDay() returned " . $count );
 		return $count;
 	}
-	
+
 /**
  * Get repeating dates by day
- * 
+ *
  * @param integer $startdate start date of repeating events, in Unix timestamp format
  * @param integer $enddate end date of repeating events, in Unix timestamp format
  * @param array $rdates array to contain expanded repeating dates
@@ -473,7 +508,7 @@ class ZCRecurringDate {
 			4 => "TH",
 			5 => "FR",
 			6 => "SA");
-	
+
 		$count = 0;
 		if(count($this->byday) > 0){
 			if(empty($this->byday[0]))
@@ -510,8 +545,11 @@ class ZCRecurringDate {
 				}
 				else {
 					// day of week version
-					$startdate_dow = date("w",$startdate);
-					$datedelta = $days[$day] - $startdate_dow;
+					$startdate_dow = date("w",$startdate) - $this->weekstart;
+					if($startdate_dow < 0) $startdate_dow += 7;
+					$dayFromSt = $days[$day] - $this->weekstart;
+					if($dayFromSt < 0) $dayFromSt += 7;
+					$datedelta = $dayFromSt - $startdate_dow;
 					self::debug(2, "start_dow: $startdate_dow, datedelta: $datedelta");
 					if($datedelta >= 0)
 					{
@@ -537,7 +575,7 @@ class ZCRecurringDate {
 
 /**
  * Get repeating dates by hour
- * 
+ *
  * @param integer $startdate start date of repeating events, in Unix timestamp format
  * @param integer $enddate end date of repeating events, in Unix timestamp format
  * @param array $rdates array to contain expanded repeating dates
@@ -571,7 +609,7 @@ class ZCRecurringDate {
 
 /**
  * Get repeating dates by minute
- * 
+ *
  * @param integer $startdate start date of repeating events, in Unix timestamp format
  * @param integer $enddate end date of repeating events, in Unix timestamp format
  * @param array $rdates array to contain expanded repeating dates
@@ -603,7 +641,7 @@ class ZCRecurringDate {
 	}
 /**
  * Get repeating dates by second
- * 
+ *
  * @param integer $startdate start date of repeating events, in Unix timestamp format
  * @param integer $enddate end date of repeating events, in Unix timestamp format
  * @param array $rdates array to contain expanded repeating dates
@@ -631,11 +669,11 @@ class ZCRecurringDate {
 
 /**
  * Determine if the loop has reached the end date
- * 
+ *
  * @param array $rdates array of repeating dates
  *
  * @return boolean
- */	
+ */
 	private function maxDates($rdates){
 		if($this->repeatmode == "c" && count($rdates) >= $this->count)
 			return true; // exceeded count
@@ -651,9 +689,9 @@ class ZCRecurringDate {
  * @param $maxdate integer maximum date to appear in repeating dates in Unix timestamp format
  *
  * @return array
- */	
+ */
 	public function getDates($maxdate = null){
-		//$this->debug = 2;
+		// $this->debug = 2;
 		self::debug(1,"getDates()");
 		$nextdate = $enddate = $this->startdate;
 		$rdates = array();
@@ -680,7 +718,6 @@ class ZCRecurringDate {
 			case "m":
 				if($eventcount > 0)
 				{
-					
 					$nextdate = ZDateHelper::addDate($nextdate,0,0,0,$this->interval,0,0,$this->tzid);
 					self::debug(2,"addDate() returned " . ZDateHelper::toSqlDateTime($nextdate));
 				}
@@ -711,11 +748,11 @@ class ZCRecurringDate {
 					$nextdate = ZDateHelper::addDate($nextdate,0,0,0,0,$this->interval*7,0,$this->tzid);
 					if(count($this->byday) > 0){
 						$dow = date("w", $nextdate);
-						// move to beginning of week (Sunday)
-						$bow = 0;
+						// move to beginning of week (WeekStart => default 0 (Sunday))
+						$bow = $this->weekstart;
 						$diff = $bow - $dow;
 						if($diff > 0)
-							$diff = $diff - 7;
+							$diff = $diff;
 						$nextdate = ZDateHelper::addDate($nextdate,0,0,0,0,$diff,0);
 					}
 					self::debug(2,"nextdate set to $nextdate (". ZDateHelper::toSQLDateTime($nextdate) . ")");
@@ -728,7 +765,7 @@ class ZCRecurringDate {
 				$enddate=ZDateHelper::addDate($nextdate,0,0,0,0,1,0);
 				break;
 			}
-	
+
 			$count = $this->byYear($nextdate,$enddate,$rdates,$this->tzid);
 			$eventcount += $count;
 			if($maxdate > 0 && $maxdate < $nextdate)
@@ -742,7 +779,7 @@ class ZCRecurringDate {
 			}
 			if($this->maxDates($rdates))
 				$done = true;
-	
+
 			$year = date("Y", $nextdate);
 			if($year > _ZAPCAL_MAXYEAR)
 			{
@@ -763,7 +800,7 @@ class ZCRecurringDate {
 		$count2 = count($rdates);
 		$dups = $count1 - $count2;
 		$excount = 0;
-	
+
 		foreach($this->exdates as $exdate)
 		{
 			if($pos = array_search($exdate,$rdates))
@@ -773,15 +810,15 @@ class ZCRecurringDate {
 			}
 		}
 		self::debug(1,"getDates() returned " . count($rdates) . " dates, removing $dups duplicates, $excount exceptions");
-	
-	
+
+
 		if($this->debug >= 2)
 		{
 			self::debug(2,"Recurring Dates:");
 			foreach($rdates as $rdate)
 			{
 				$d = getdate($rdate);
-				self::debug(2,ZDateHelper::toSQLDateTime($rdate) . " " . $d["wday"] ); 
+				self::debug(2,ZDateHelper::toSQLDateTime($rdate) . " " . $d["wday"] );
 			}
 			self::debug(2,"Exception Dates:");
 			foreach($this->exdates as $exdate)
@@ -790,7 +827,7 @@ class ZCRecurringDate {
 			}
 			//exit;
 		}
-	
+
 		return $rdates;
 	}
 }
