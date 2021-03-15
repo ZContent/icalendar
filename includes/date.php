@@ -257,7 +257,7 @@ class ZDateHelper {
 			foreach($dur2 as $dur){
 				$val=intval($dur);
 				if(strlen($dur) > 0){
-					switch($dur{strlen($dur) - 1}) {
+					switch($dur[strlen($dur) - 1]) {
 						case "H":
 							$secs += 60*60 * $val;
 							break;
