@@ -22,27 +22,23 @@ namespace ICalendarOrg;
  */
 class ZCiCalNode
 	{
-
 	/**
 	 * Array of children for this node
 	 *
-	 * @var array
 	 */
-	public $child = [];
+	public array $child = [];
 
 	/**
 	 * Array of $data for this node
 	 *
-	 * @var array
 	 */
-	public $data = [];
+	public array $data = [];
+
 	/**
 	 * The name of the node
 	 *
-	 * @var string
 	 */
-	public $name = '';
-
+	public string $name = '';
 
 	/**
 	 * Next sibling of this node
@@ -72,13 +68,14 @@ class ZCiCalNode
 	 * @param object $_parent Parent node for this node
 	 * @param bool $first Is this the first child for this parent?
 	 */
-	public function __construct($_name, & $_parent, $first = false)
+	public function __construct(string $_name, $_parent, bool $first = false)
 		{
 		$this->name = $_name;
 		$this->parentnode = $_parent;
-		if ($_parent != null)
+
+		if (null != $_parent)
 			{
-			if (count($this->parentnode->child) > 0)
+			if (\count($this->parentnode->child) > 0)
 				{
 				if ($first)
 					{
@@ -88,14 +85,15 @@ class ZCiCalNode
 					}
 				else
 					{
-					$prev = & $this->parentnode->child[count($this->parentnode->child) - 1];
+					$prev = & $this->parentnode->child[\count($this->parentnode->child) - 1];
 					$prev->next = & $this;
 					$this->prev = & $prev;
 					}
 				}
+
 			if ($first)
 				{
-				array_unshift($this->parentnode->child, $this);
+				\array_unshift($this->parentnode->child, $this);
 				}
 			else
 				{
@@ -113,9 +111,9 @@ class ZCiCalNode
 	 */
 	public function addNode($node)
 		{
-		if (array_key_exists($node->getName(), $this->data))
+		if (\array_key_exists($node->getName(), $this->data))
 			{
-			if (! is_array($this->data[$node->getName()]))
+			if (! \is_array($this->data[$node->getName()]))
 				{
 				$this->data[$node->getName()] = [];
 				$this->data[$node->getName()][] = $node;
@@ -136,38 +134,42 @@ class ZCiCalNode
 	 * @param object $node Top level node to export
 	 * @param int $level Level of recursion (usually leave this blank)
 	 *
-	 * @return string iCalendar formatted output
 	 * @throws Exception
+	 * @return string iCalendar formatted output
 	 */
-	public function export($node = null, $level = 0)
+	public function export($node = null, int $level = 0)
 		{
 		$txtstr = '';
-		if ($node == null)
+
+		if (null == $node)
 			{
 			$node = $this;
 			}
+
 		if ($level > 5)
 			{
 			//die("levels nested too deep<br/>\n");
 			throw new \Exception('levels nested too deep');
 			}
 		$txtstr .= 'BEGIN:' . $node->getName() . "\r\n";
-		if (property_exists($node, 'data'))
+
+		if (\property_exists($node, 'data'))
 			{
 			foreach ($node->data as $d)
 				{
-				if (is_array($d))
+				if (\is_array($d))
 					{
 					foreach ($d as $c)
 						{
 						//$txtstr .= $node->export($c,$level + 1);
 						$p = '';
 						$params = @$c->getParameters();
-						if (count($params) > 0)
+
+						if (\count($params) > 0)
 							{
 							foreach ($params as $key => $value)
 								{
-								$p .= ';' . strtoupper($key) . '=' . $value;
+								$p .= ';' . \strtoupper($key) . '=' . $value;
 								}
 							}
 						$txtstr .= $this->printDataLine($c, $p);
@@ -177,18 +179,20 @@ class ZCiCalNode
 					{
 					$p = '';
 					$params = @$d->getParameters();
-					if (count($params) > 0)
+
+					if (\count($params) > 0)
 						{
 						foreach ($params as $key => $value)
 							{
-							$p .= ';' . strtoupper($key) . '=' . $value;
+							$p .= ';' . \strtoupper($key) . '=' . $value;
 							}
 						}
 					$txtstr .= $this->printDataLine($d, $p);
 					}
 				}
 			}
-		if (property_exists($node, 'child'))
+
+		if (\property_exists($node, 'child'))
 			{
 			foreach ($node->child as $c)
 				{
@@ -205,9 +209,8 @@ class ZCiCalNode
 	 *
 	 * @param int $i array id of attribute to get
 	 *
-	 * @return string
 	 */
-	public function getAttrib($i)
+	public function getAttrib(int $i) : string
 		{
 		return $this->attrib[$i];
 		}
@@ -217,24 +220,22 @@ class ZCiCalNode
 	 *
 	 * @return object|null The first child
 	 *
-	 * @return mixed
 	 */
 	public function getFirstChild()
 		{
-		if (count($this->child) > 0)
+		if (\count($this->child) > 0)
 			{
 			return $this->child[0];
 			}
 
-		return null;
+
 		}
 
 	/**
-	* Return the name of the object
-	*
-	* @return string
-	*/
-	public function getName()
+	 * Return the name of the object
+	 *
+	 */
+	public function getName() : string
 		{
 		return $this->name;
 		}
@@ -255,9 +256,8 @@ class ZCiCalNode
 	 * @param object $d attributes
 	 * @param object $p properties
 	 *
-	 * @return string
 	 */
-	public function printDataLine($d, $p)
+	public function printDataLine($d, $p) : string
 		{
 		$txtstr = '';
 
@@ -266,53 +266,59 @@ class ZCiCalNode
 		//$values = str_replace(',', "\\,", $values);
 
 		$line = $d->getName() . $p . ':' . $values;
-		$line = str_replace(['<br>', '<BR>', '<br/>', '<BR/'], '\\n', $line);
-		$line = str_replace(["\r\n", "\n\r", "\n", "\r"], '\n', $line);
+		$line = \str_replace(['<br>', '<BR>', '<br/>', '<BR/'], '\\n', $line);
+		$line = \str_replace(["\r\n", "\n\r", "\n", "\r"], '\n', $line);
 		//$line = str_replace(array(',',';','\\'), array('\\,','\\;','\\\\'),$line);
 		//$line =strip_tags($line);
 		$linecount = 0;
-		while (strlen($line) > 0)
+
+		while (\strlen($line) > 0)
 			{
-			$linewidth = ($linecount == 0 ? 75 : 74);
-			$linesize = (strlen($line) > $linewidth ? $linewidth : strlen($line));
+			$linewidth = (0 == $linecount ? 75 : 74);
+			$linesize = (\strlen($line) > $linewidth ? $linewidth : \strlen($line));
+
 			if ($linecount > 0)
 				{
 				$txtstr .= ' ';
 				}
-			$txtstr .= substr($line, 0, $linesize) . "\r\n";
+			$txtstr .= \substr($line, 0, $linesize) . "\r\n";
 			$linecount += 1;
-			$line = substr($line, $linewidth);
+			$line = \substr($line, $linewidth);
 			}
 
 		return $txtstr;
 		}
 
 	/**
-	* Print object tree in HTML for debugging purposes
-	*
-	* @param object $node select part of tree to print, or leave blank for full tree
-	* @param int $level Level of recursion (usually leave this blank)
-	*
-	* @return string - HTML formatted display of object tree
-	*/
-	public function printTree($node = null, $level = 1)
+	 * Print object tree in HTML for debugging purposes
+	 *
+	 * @param object $node select part of tree to print, or leave blank for full tree
+	 * @param int $level Level of recursion (usually leave this blank)
+	 *
+	 * @return string - HTML formatted display of object tree
+	 */
+	public function printTree($node = null, int $level = 1) : string
 		{
 		$level += 1;
 		$html = '';
-		if ($node == null)
+
+		if (null == $node)
 			{
 			$node = $this->parentnode;
 			}
+
 		if ($level > 5)
 			{
-			die("levels nested too deep<br/>\n");
+			exit("levels nested too deep<br/>\n");
 			//return;
 			}
+
 		for ($i = 0; $i < $level; $i++)
 			{
 			$html .= '+';
 			}
 		$html .= $node->getName() . "<br/>\n";
+
 		foreach ($node->child as $c)
 			{
 			$html .= $node->printTree($c, $level);
@@ -329,7 +335,7 @@ class ZCiCalNode
 	 *
 	 * @return ZCiCalNode
 	 */
-	public function setAttrib($value)
+	public function setAttrib(string $value) : \ICalendarOrg\ZCiCalNode
 		{
 		$this->attrib[] = $value;
 

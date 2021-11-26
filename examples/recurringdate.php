@@ -9,6 +9,8 @@
  * @link	http://icalendar.org/php-library.html
  */
 
+include '../vendor/autoload.php';
+
 /**
  * Recurring Date Example
  *

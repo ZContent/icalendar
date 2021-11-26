@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+PHP_CS_FIXER="vendor/bin/php-cs-fixer"
+PSALM="vendor/bin/psalm"
+
+if [ ! -x $PHP_CS_FIXER ]; then
+    echo ""
+    echo "php-cs-fixer not found. Try:"
+    echo ""
+    echo "  composer install"
+    echo ""
+    exit 1
+fi
+
+#if [ ! -x $PSALM ]; then
+#    echo ""
+#    echo "vimeo/psalm not found. Try:"
+#    echo ""
+#    echo "  composer install"
+#    echo ""
+#    exit 1
+#fi
+
+FILES=`git status --porcelain | grep -E '^[AM] +(src|tests).*\.php$' | cut -c 4- | tr '\n' ' '`
+if [ -z "$FILES" ]; then
+  echo "No php files found in commit."
+else
+  output=`php -l ${FILES}`
+  OUT=$?
+  if [ $OUT != '0' ]; then
+    echo "$output"
+    echo ""
+    echo "Please correct and recommit"
+
+    exit 1
+  fi
+
+  $PHP_CS_FIXER fix --config=.php-cs-fixer.dist.php ${FILES} >/dev/null 2>&1
+  git add ${FILES}
+
+#  output=`$PSALM --report=psalmCommitErrors.txt --config=psalmCommit.xml ${FILES} >/dev/null 2>&1`
+#  OUT=$?
+#  if [ $OUT != '0' ]; then
+#    echo "PSALM Failed with the following errors:"
+#    echo ""
+#    cat psalmCommitErrors.txt
+#    echo ""
+#    echo "Please correct and recommit"
+#
+#    exit 1
+#  fi
+fi

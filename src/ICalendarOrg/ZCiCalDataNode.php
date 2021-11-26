@@ -21,23 +21,20 @@ class ZCiCalDataNode
 	/**
 	 * The name of the node
 	 *
-	 * @var string
 	 */
-	public $name = '';
+	public string $name = '';
 
 	/**
 	 * Node parameters (before the colon ':')
 	 *
-	 * @var array
 	 */
-	public $parameter = [];
+	public array $parameter = [];
 
 	/**
 	 * Node values (after the colon ':')
 	 *
-	 * @var array
 	 */
-	public $value = [];
+	public array $value = [];
 
 	/**
 	 * Create an object from an unfolded iCalendar line
@@ -46,58 +43,63 @@ class ZCiCalDataNode
 	 *
 	 * @return void
 	 */
-	public function __construct($line)
+	public function __construct(string $line)
 		{
 		//separate line into parameters and value
 		// look for colon separating name or parameter and value
 		// first change any escaped colons temporarily to make it easier
-		$tline = str_replace('\\:', '`~', $line);
+		$tline = \str_replace('\\:', '`~', $line);
 		// see if first colon is inside a quoted string
 		$i = 0;
 		$datafind = false;
 		$inquotes = false;
-		while (! $datafind && ($i < strlen($tline)))
+
+		while (! $datafind && ($i < \strlen($tline)))
 			{
-			if (! $inquotes && $tline{$i} == ':')
+			if (! $inquotes && ':' == $tline[$i])
 				{
 				$datafind = true;
 				}
 			else
 				{
 				$i += 1;
-				if (substr($tline, $i, 1) == '"')
+
+				if ('"' == \substr($tline, $i, 1))
 					{
 					$inquotes = ! $inquotes;
 					}
 				}
 			}
+
 		if ($datafind)
 			{
-			$value = str_replace('`~', '\\:', substr($line, $i + 1));
+			$value = \str_replace('`~', '\\:', \substr($line, $i + 1));
 			// fix escaped characters (don't see double quotes in spec but Apple apparently uses it in iCal)
-			$value = str_replace(['\\N', '\\n', '\\"'], ["\n", "\n", '"'], $value);
-			$tvalue = str_replace('\\,', '`~', $value);
-			$tvalue = explode(',', $tvalue);
-			$value = str_replace('`~', '\\,', $tvalue);
+			$value = \str_replace(['\\N', '\\n', '\\"'], ["\n", "\n", '"'], $value);
+			$tvalue = \str_replace('\\,', '`~', $value);
+			$tvalue = \explode(',', $tvalue);
+			$value = \str_replace('`~', '\\,', $tvalue);
 			$this->value = $value;
 			}
 
-		$parameter = trim(substr($line, 0, $i));
+		$parameter = \trim(\substr($line, 0, $i));
 
-		$parameter = str_replace('\\;', '`~', $parameter);
-		$parameters = explode(';', $parameter);
-		$parameters = str_replace('`~', '\\;', $parameters);
-		$this->name = array_shift($parameters);
+		$parameter = \str_replace('\\;', '`~', $parameter);
+		$parameters = \explode(';', $parameter);
+		$parameters = \str_replace('`~', '\\;', $parameters);
+		$this->name = \array_shift($parameters);
+
 		foreach ($parameters as $parameter)
 			{
-			$pos = strpos($parameter, '=');
+			$pos = \strpos($parameter, '=');
+
 			if ($pos > 0)
 				{
-				$param = substr($parameter, 0, $pos);
-				$paramvalue = substr($parameter, $pos + 1);
-				$tvalue = str_replace('\\,', '`~', $paramvalue);
-				$paramvalue = str_replace('`~', '\\,', $tvalue);
-				$this->parameter[strtolower($param)] = $paramvalue;
+				$param = \substr($parameter, 0, $pos);
+				$paramvalue = \substr($parameter, $pos + 1);
+				$tvalue = \str_replace('\\,', '`~', $paramvalue);
+				$paramvalue = \str_replace('`~', '\\,', $tvalue);
+				$this->parameter[\strtolower($param)] = $paramvalue;
 				}
 			}
 		}
@@ -107,9 +109,8 @@ class ZCiCalDataNode
 	 *
 	 * Return the name of the object
 	 *
-	 * @return string
 	 */
-	public function getName()
+	public function getName() : string
 		{
 		return $this->name;
 		}
@@ -117,11 +118,9 @@ class ZCiCalDataNode
 	/**
 	 * Get $ith parameter from array
 	 *
-	 * @param int $i
 	 *
-	 * @return mixed
 	 */
-	public function getParameter($i)
+	public function getParameter(int $i)
 		{
 		return $this->parameter[$i];
 		}
@@ -129,9 +128,8 @@ class ZCiCalDataNode
 	/**
 	 * Get parameter array
 	 *
-	 * @return array
 	 */
-	public function getParameters()
+	public function getParameters() : array
 		{
 		return $this->parameter;
 		}
@@ -139,10 +137,9 @@ class ZCiCalDataNode
 	/**
 	 * Get comma separated values
 	 *
-	 * @return string
 	 */
-	public function getValues()
+	public function getValues() : string
 		{
-		return implode(',', $this->value);
+		return \implode(',', $this->value);
 		}
 	}

@@ -18,7 +18,6 @@ namespace ICalendarOrg;
  */
 class ZCTimeZoneHelper
 	{
-
 	/**
 	 * getTZNode creates VTIMEZONE section in an iCalendar file
 	 *
@@ -29,23 +28,26 @@ class ZCTimeZoneHelper
 	 *
 	 * @return object return VTIMEZONE object
 	 */
-	public static function getTZNode($startyear, $endyear, $tzid, $parentnode)
+	public static function getTZNode(int $startyear, int $endyear, string $tzid, $parentnode) : \ICalendarOrg\ZCiCalNode
 		{
 		$tzmins = [];
 		$tzmaxs = [];
-		if (! array_key_exists($tzid, $tzmins) || $tzmins[$tzid] > $startyear)
+
+		if (! \array_key_exists($tzid, $tzmins) || $tzmins[$tzid] > $startyear)
 			{
 			$tzmins[$tzid] = $startyear;
 			}
-		if (! array_key_exists($tzid, $tzmaxs) || $tzmaxs[$tzid] < $endyear)
+
+		if (! \array_key_exists($tzid, $tzmaxs) || $tzmaxs[$tzid] < $endyear)
 			{
 			$tzmaxs[$tzid] = $endyear;
 			}
 
-		foreach (array_keys($tzmins)as $tzid)
+		foreach (\array_keys($tzmins)as $tzid)
 			{
 			$tmin = $tzmins[$tzid] - 1;
-			if (array_key_exists($tzid, $tzmaxs))
+
+			if (\array_key_exists($tzid, $tzmaxs))
 				{
 				$tmax = $tzmaxs[$tzid] + 1;
 				}
@@ -53,16 +55,17 @@ class ZCTimeZoneHelper
 				{
 				$tmax = $tzmins[$tzid] + 1;
 				}
-			$tstart = gmmktime(0, 0, 0, 1, 1, $tmin);
-			$tend = gmmktime(23, 59, 59, 12, 31, $tmax);
+			$tstart = \gmmktime(0, 0, 0, 1, 1, $tmin);
+			$tend = \gmmktime(23, 59, 59, 12, 31, $tmax);
 			$tz = new \DateTimeZone($tzid);
 			$transitions = $tz->getTransitions($tstart, $tend);
-			$tzobj = new ZCiCalNode('VTIMEZONE', $parentnode, true);
-			$datanode = new ZCiCalDataNode('TZID:' . str_replace('_', ' ', $tzid));
+			$tzobj = new \ICalendarOrg\ZCiCalNode('VTIMEZONE', $parentnode, true);
+			$datanode = new \ICalendarOrg\ZCiCalDataNode('TZID:' . \str_replace('_', ' ', $tzid));
 			$tzobj->data[$datanode->getName()] = $datanode;
 			$count = 0;
 			$lasttransition = null;
-			if (count($transitions) == 1)
+
+			if (1 == \count($transitions))
 				{
 				// not enough transitions found, probably UTC
 				// lets add fake transition at end for those systems that need it (i.e. Outlook)
@@ -74,57 +77,63 @@ class ZCTimeZoneHelper
 				$t2['abbr'] = $transitions[0]['abbr'];
 				$transitions[] = $t2;
 				}
+
 			foreach ($transitions as $transition)
 				{
 				$count++;
-				if ($count == 1)
+
+				if (1 == $count)
 					{
 					$lasttransition = $transition;
+
 					continue; // skip first item
 					}
-				if ($transition['isdst'] == 1)
+
+				if (1 == $transition['isdst'])
 					{
-					$tobj = new ZCiCalNode('DAYLIGHT', $tzobj);
+					$tobj = new \ICalendarOrg\ZCiCalNode('DAYLIGHT', $tzobj);
 					}
 				else
 					{
-					$tobj = new ZCiCalNode('STANDARD', $tzobj);
+					$tobj = new \ICalendarOrg\ZCiCalNode('STANDARD', $tzobj);
 					}
 				//$tzobj->data[$tobj->getName()] == $tobj;
 
 				// convert timestamp to local time zone
-				$ts = ZDateHelper::toUnixDateTime(ZDateHelper::toLocalDateTime(ZDateHelper::toSQLDateTime($transition['ts']), $tzid));
-				$datanode = new ZCiCalDataNode('DTSTART:' . ZDateHelper::toiCalDateTime($ts));
+				$ts = \ICalendarOrg\ZDateHelper::toUnixDateTime(\ICalendarOrg\ZDateHelper::toLocalDateTime(\ICalendarOrg\ZDateHelper::toSQLDateTime($transition['ts']), $tzid));
+				$datanode = new \ICalendarOrg\ZCiCalDataNode('DTSTART:' . \ICalendarOrg\ZDateHelper::toiCalDateTime($ts));
 				$tobj->data[$datanode->getName()] = $datanode;
 				$toffset = $lasttransition['offset'];
-				$thours = intval($toffset / 60 / 60);
-				$tmins = abs($toffset) / 60 - intval(abs($toffset) / 60 / 60) * 60;
+				$thours = (int)($toffset / 60 / 60);
+				$tmins = \abs($toffset) / 60 - (int)(\abs($toffset) / 60 / 60) * 60;
+
 				if ($thours < 0)
 					{
-					$offset = sprintf('%03d%02d', $thours, $tmins);
+					$offset = \sprintf('%03d%02d', $thours, $tmins);
 					}
 				else
 					{
-					$offset = sprintf('+%02d%02d', $thours, $tmins);
+					$offset = \sprintf('+%02d%02d', $thours, $tmins);
 					}
-				$datanode = new ZCiCalDataNode('TZOFFSETFROM:' . $offset);
+				$datanode = new \ICalendarOrg\ZCiCalDataNode('TZOFFSETFROM:' . $offset);
 				$tobj->data[$datanode->getName()] = $datanode;
 
 				$toffset = $transition['offset'];
-				$thours = intval($toffset / 60 / 60);
-				$tmins = abs($toffset) / 60 - intval(abs($toffset) / 60 / 60) * 60;
+				$thours = (int)($toffset / 60 / 60);
+				$tmins = \abs($toffset) / 60 - (int)(\abs($toffset) / 60 / 60) * 60;
+
 				if ($thours < 0)
 					{
-					$offset = sprintf('%03d%02d', $thours, $tmins);
+					$offset = \sprintf('%03d%02d', $thours, $tmins);
 					}
 				else
 					{
-					$offset = sprintf('+%02d%02d', $thours, $tmins);
+					$offset = \sprintf('+%02d%02d', $thours, $tmins);
 					}
-				$datanode = new ZCiCalDataNode('TZOFFSETTO:' . $offset);
+				$datanode = new \ICalendarOrg\ZCiCalDataNode('TZOFFSETTO:' . $offset);
 				$tobj->data[$datanode->getName()] = $datanode;
 
-				$datanode = new ZCiCalDataNode('TZNAME:' . $transition['abbr']);
+				$datanode = new \ICalendarOrg\ZCiCalDataNode('TZNAME:' . $transition['abbr']);
 				$tobj->data[$datanode->getName()] = $datanode;
 
 				$lasttransition = $transition;

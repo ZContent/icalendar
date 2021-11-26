@@ -1,6 +1,6 @@
-# Zap Calendar iCalendar Library [![Build Status](https://travis-ci.org/phpfui/icalendar.png?branch=master)](https://travis-ci.org/phpfui/icalendar)
+# Zap Calendar iCalendar Library [![Tests](https://github.com/phpfui/icalendar/actions/workflows/tests.yml/badge.svg)](https://github.com/phpfui/icalendar/actions?query=workflow%3Atests) [![Latest Packagist release](https://img.shields.io/packagist/v/phpfui/icalendar.svg)](https://packagist.org/packages/phpfui/icalendar)
 
-## A modern 7.1 namespaced fork of [Zap Calendar iCalendar Library](https://github.com/zcontent/icalendar)
+## A modern 7.4 namespaced fork of [Zap Calendar iCalendar Library](https://github.com/zcontent/icalendar)
 
 The Zap Calendar iCalendar Library is a PHP library for supporting the iCalendar (RFC 5545) standard.
 
@@ -13,7 +13,7 @@ This PHP library is for reading and writing iCalendar formatted feeds and files.
 
 All iCalendar data is stored in a PHP object tree. This allows any property to be added to the iCalendar feed without requiring specialized library function calls. With power comes responsibility.  Missing or invalid properties can cause the resulting iCalendar file to be invalid. Visit [iCalendar.org](http://icalendar.org) to view valid properties and test your feed using the site's [iCalendar validator tool](http://icalendar.org/validator.html).
 
-Library API documentation can be found at http://icalendar.org/zapcallibdocs
+Library API documentation can be found at http://icalendar.org/zapcallibdocs and [PHPFUI/ICalendarOrg](http://phpfui.com/?n=ICalendarOrg)
 
 See the examples folder for programs that read and write iCalendar files. Best to include the sample files into a file with an active autoloader or include all the classes to run the examples directly.
 
