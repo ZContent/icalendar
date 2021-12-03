@@ -19,74 +19,62 @@ namespace ICalendarOrg;
 class ZCRecurringDate
 	{
 	/**
-	 * array of repeat by day values
-	 *
+	 * @var array of repeat by day values
 	 */
 	public array $byday = [];
 
 	/**
-	 * array of repeat by hour values
-	 *
+	 * @var array of repeat by hour values
 	 */
 	public array $byhour = [];
 
 	/**
-	 * array of repeat by minutes values
-	 *
+	 * @var array of repeat by minutes values
 	 */
 	public array $byminute = [];
 
 	/**
-	 * array of repeat by month values
-	 *
+	 * @var array of repeat by month values
 	 */
 	public array $bymonth = [];
 
 	/**
-	 * array of repeat by month day values
-	 *
+	 * @var array of repeat by month day values
 	 */
 	public array $bymonthday = [];
 
 	/**
-	 * array of repeat by seconds values
-	 *
+	 * @var array of repeat by seconds values
 	 */
 	public array $bysecond = [];
 
 	/**
-	 * array of repeat by setpos values
-	 *
+	 * @var array of repeat by setpos values
 	 */
 	public array $bysetpos = [];
 
 	/**
-	 * array of repeat by year values
-	 *
+	 * @var array of repeat by year values
 	 */
 	public array $byyear = [];
 
 	/**
-	 * repeat count when repeat mode is 'c'
-	 *
+	 * @var repeat count when repeat mode is 'c'
 	 */
 	public int $count = 0;
 
 	/**
-	 * debug level (for testing only)
-	 *
+	 * @var debug level (for testing only)
 	 */
 	public int $debug = 0;
 
 	/**
-	 * error string (future use)
-	 *
+	 * @var error string (future use)
 	 */
 	public string $error;
 
 	/**
-	 * array of exception dates in Unix Timestamp format (UTC dates)
-	 *
+	 * @var array of exception dates in Unix Timestamp format (UTC dates)
 	 */
 	public array $exdates = [];
 
