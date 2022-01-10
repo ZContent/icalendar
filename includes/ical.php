@@ -503,7 +503,7 @@ function __construct($data = "", $maxevents = 1000000, $startevent = 0) {
 		//$data = str_replace(array("\n ", "\n	"),"!?", $data);
 		$data = str_replace(array("\n ", "\n	"),"", $data);
 		// replace special iCal chars
-		$data = str_replace(array("\\\\","\,"),array("\\",","), $data);
+		$data = str_replace(array("\\\\","\,","\;"),array("\\",",",";"), $data);
 
 		// parse each line
 		$lines = explode("\n", $data);
