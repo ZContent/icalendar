@@ -33,10 +33,10 @@ Add a start and end date to the event:
 
 ```php
 // add start date
-$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode("DTSTART:" . \ICalendarOrg\ZCiCal::fromSqlDateTime("2020-01-01 12:00:00")));
+$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode("DTSTART:" . \ICalendarOrg\ZDateHelper::fromSqlDateTime("2020-01-01 12:00:00")));
 
 // add end date
-$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode("DTEND:" . \ICalendarOrg\ZCiCal::fromSqlDateTime("2020-01-01 13:00:00")));
+$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode("DTEND:" . \ICalendarOrg\ZDateHelper::fromSqlDateTime("2020-01-01 13:00:00")));
 ```
 
 Write the object in iCalendar format using the  export() function call:
