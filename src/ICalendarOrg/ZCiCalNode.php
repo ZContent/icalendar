@@ -79,15 +79,15 @@ class ZCiCalNode
 				{
 				if ($first)
 					{
-					$first = & $this->parentnode->child[0];
-					$first->prev = & $this;
-					$this->next = & $first;
+					$first = &$this->parentnode->child[0];
+					$first->prev = &$this;
+					$this->next = &$first;
 					}
 				else
 					{
-					$prev = & $this->parentnode->child[\count($this->parentnode->child) - 1];
-					$prev->next = & $this;
-					$this->prev = & $prev;
+					$prev = &$this->parentnode->child[\count($this->parentnode->child) - 1];
+					$prev->next = &$this;
+					$this->prev = &$prev;
 					}
 				}
 
@@ -97,7 +97,7 @@ class ZCiCalNode
 				}
 			else
 				{
-				$this->parentnode->child[] = & $this;
+				$this->parentnode->child[] = &$this;
 				}
 			}
 		}
