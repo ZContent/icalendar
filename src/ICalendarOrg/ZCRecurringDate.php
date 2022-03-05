@@ -86,6 +86,13 @@ class ZCRecurringDate
 	public ?string $freq = null;
 
 	/**
+	 * start of week number (i.e. 0 for Sunday, 5 for Friday)
+	 *
+	 * @var ?integer
+	 */
+	public ?int $weekstart = null;
+
+	/**
 	 * inteval of repeating event (i.e. every 2 weeks, every 6 months)
 	 *
 	 */
@@ -208,6 +215,52 @@ class ZCRecurringDate
 
 							case 'SECONDLY':
 								$this->freq = 's';
+
+								break;
+							}
+
+						break;
+
+					case 'WKST':
+						switch($item[1])
+							{
+							case 'SU':
+								$this->weekstart = 0;
+
+								break;
+
+							case 'MO':
+								$this->weekstart = 1;
+
+								break;
+
+							case 'TU':
+								$this->weekstart = 2;
+
+								break;
+
+							case 'WE':
+								$this->weekstart = 3;
+
+								break;
+
+							case 'TH':
+								$this->weekstart = 4;
+
+								break;
+
+							case 'FR':
+								$this->weekstart = 5;
+
+								break;
+
+							case 'SA':
+								$this->weekstart = 6;
+
+								break;
+
+							default:
+								$this->weekstart = 0;
 
 								break;
 							}
@@ -440,8 +493,8 @@ class ZCRecurringDate
 						if (\count($this->byday) > 0)
 							{
 							$dow = \date('w', $nextdate);
-							// move to beginning of week (Sunday)
-							$bow = 0;
+							// move to beginning of week (WeekStart => default 0 (Sunday))
+							$bow = $this->weekstart;
 							$diff = $bow - $dow;
 
 							if ($diff > 0)
@@ -660,6 +713,19 @@ class ZCRecurringDate
 				else
 					{
 					// day of week version
+					$startdate_dow = \date('w', $startdate) - $this->weekstart;
+
+					if ($startdate_dow < 0)
+						{
+						$startdate_dow += 7;
+						}
+					$dayFromSt = $days[$day] - $this->weekstart;
+
+					if ($dayFromSt < 0)
+						{
+						$dayFromSt += 7;
+						}
+					$datedelta = $dayFromSt - $startdate_dow;
 					$startdate_dow = \date('w', $startdate);
 					$datedelta = $days[$day] - $startdate_dow;
 					self::debug(2, "start_dow: {$startdate_dow}, datedelta: {$datedelta}");
