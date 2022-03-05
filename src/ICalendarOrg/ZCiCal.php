@@ -52,7 +52,7 @@ class ZCiCal
 			//$data = str_replace(array("\n ", "\n	"),"!?", $data);
 			$data = \str_replace(["\n ", "\n	"], '', $data);
 			// replace special iCal chars
-			$data = \str_replace(['\\\\', "\,"], ['\\', ','], $data);
+			$data = \str_replace(['\\\\', "\,", "\;"], ['\\', ',', ';'], $data);
 
 			// parse each line
 			$lines = \explode("\n", $data);
