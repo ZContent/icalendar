@@ -2,11 +2,10 @@
 /**
  * ical.php	create iCalendar data structure
  *
- * @package	ZapCalLib
  * @author	Dan Cogliano <http://zcontent.net>
  * @copyright   Copyright (C) 2006 - 2018 by Dan Cogliano
  * @license     GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
- * @link	http://icalendar.org/php-library.html
+ * @link http://phpfui.com/?n=ICalendarOrg
  */
 
 namespace ICalendarOrg;
@@ -20,19 +19,20 @@ class ZCiCalDataNode
 	{
 	/**
 	 * The name of the node
-	 *
 	 */
 	public string $name = '';
 
 	/**
 	 * Node parameters (before the colon ':')
 	 *
+	 * @var array<string, string> $parameter
 	 */
 	public array $parameter = [];
 
 	/**
 	 * Node values (after the colon ':')
 	 *
+	 * @var array<string> $value
 	 */
 	public array $value = [];
 
@@ -107,8 +107,7 @@ class ZCiCalDataNode
 	/**
 	 * getName()
 	 *
-	 * Return the name of the object
-	 *
+	 * @return string the name of the object
 	 */
 	public function getName() : string
 		{
@@ -116,18 +115,17 @@ class ZCiCalDataNode
 		}
 
 	/**
-	 * Get $ith parameter from array
-	 *
-	 *
+	 * Get specific parameter from array
 	 */
-	public function getParameter(int $i)
+	public function getParameter(string $index) : string
 		{
-		return $this->parameter[$i];
+		return $this->parameter[$index];
 		}
 
 	/**
 	 * Get parameter array
 	 *
+	 * @return array<string, string>
 	 */
 	public function getParameters() : array
 		{
@@ -136,7 +134,6 @@ class ZCiCalDataNode
 
 	/**
 	 * Get comma separated values
-	 *
 	 */
 	public function getValues() : string
 		{

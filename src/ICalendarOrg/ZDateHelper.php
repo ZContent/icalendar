@@ -2,11 +2,10 @@
 /**
  * date.php - date helper class
  *
- * @package	ZapCalLib
  * @author	Dan Cogliano <http://zcontent.net>
  * @copyright   Copyright (C) 2006 - 2018 by Dan Cogliano
  * @license     GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
- * @link	http://icalendar.org/php-library.html
+ * @link http://phpfui.com/?n=ICalendarOrg
  */
 
 namespace ICalendarOrg;
@@ -37,12 +36,12 @@ class ZDateHelper
 		\date_default_timezone_set($tzid);
 		$sqldate = self::toSQLDateTime($date);
 		$tdate = [];
-		$tdate['year'] = \substr($sqldate, 0, 4);
-		$tdate['mon'] = \substr($sqldate, 5, 2);
-		$tdate['mday'] = \substr($sqldate, 8, 2);
-		$tdate['hours'] = \substr($sqldate, 11, 2);
-		$tdate['minutes'] = \substr($sqldate, 14, 2);
-		$tdate['seconds'] = \substr($sqldate, 17, 2);
+		$tdate['year'] = (int)\substr($sqldate, 0, 4);
+		$tdate['mon'] = (int)\substr($sqldate, 5, 2);
+		$tdate['mday'] = (int)\substr($sqldate, 8, 2);
+		$tdate['hours'] = (int)\substr($sqldate, 11, 2);
+		$tdate['minutes'] = (int)\substr($sqldate, 14, 2);
+		$tdate['seconds'] = (int)\substr($sqldate, 17, 2);
 		$newdate = \mktime($tdate['hours'] + $hour, $tdate['minutes'] + $min, $tdate['seconds'] + $sec, $tdate['mon'] + $month, $tdate['mday'] + $day, $tdate['year'] + $year);
 		\date_default_timezone_set('UTC');
 
@@ -98,18 +97,18 @@ class ZDateHelper
 			{
 			return 0;
 			}
-		$year = \substr($datetime, 0, 4);
-		$month = \substr($datetime, 4, 2);
-		$day = \substr($datetime, 6, 2);
+		$year = (int)\substr($datetime, 0, 4);
+		$month = (int)\substr($datetime, 4, 2);
+		$day = (int)\substr($datetime, 6, 2);
 		$hour = 0;
 		$minute = 0;
 		$second = 0;
 
 		if (\strlen($datetime) > 8 && 'T' == $datetime[8])
 			{
-			$hour = \substr($datetime, 9, 2);
-			$minute = \substr($datetime, 11, 2);
-			$second = \substr($datetime, 13, 2);
+			$hour = (int)\substr($datetime, 9, 2);
+			$minute = (int)\substr($datetime, 11, 2);
+			$second = (int)\substr($datetime, 13, 2);
 			}
 
 		return \gmmktime($hour, $minute, $second, $month, $day, $year);
@@ -165,43 +164,43 @@ class ZDateHelper
 			foreach ($values as $value)
 				{
 				$rtype = \substr($value, \strlen($value) - 1);
-				$rvalue = (int)(\substr($value, 0, \strlen($value) - 1));
+				$rvalue = (\substr($value, 0, \strlen($value) - 1));
 
 				switch ($rtype)
 					{
 					case 'y':
-						$y = $rvalue;
+						$y = (int)$rvalue;
 
 						break;
 
 					case 'm':
-						$m = $rvalue;
+						$m = (int)$rvalue;
 
 						break;
 
 					case 'd':
-						$d = $rvalue;
+						$d = (int)$rvalue;
 
 						break;
 
 					case 'h':
-						$h = $rvalue;
+						$h = (int)$rvalue;
 
 						break;
 
 					case 'n':
-						$n = $rvalue;
+						$n = (int)$rvalue;
 
 						break;
 					}
 				// for '-' values, move to start of day , otherwise, move to end of day
 				if ('-' == $rvalue[0])
 					{
-					$udate = \mktime(0, 0, 0, \date('m', $udate), \date('d', $udate), \date('Y', $udate));
+					$udate = \mktime(0, 0, 0, (int)\date('m', $udate), (int)\date('d', $udate), (int)\date('Y', $udate));
 					}
 				else
 					{
-					$udate = \mktime(0, -1, 0, \date('m', $udate), \date('d', $udate) + 1, \date('Y', $udate));
+					$udate = \mktime(0, -1, 0, (int)\date('m', $udate), (int)\date('d', $udate) + 1, (int)\date('Y', $udate));
 					}
 				$udate = self::addDate($udate, $h, $n, 0, $m, $d, $y);
 				}
@@ -338,8 +337,6 @@ class ZDateHelper
 	 * Return now as DateTime
 	 *
 	 * @param string $tzid PHP recognized timezone (default is UTC)
-	 *
-	 * @return DateTime
 	 */
 	public static function DTNow(string $tzid) : \DateTime
 		{
@@ -367,8 +364,8 @@ class ZDateHelper
 		$dt = self::DTNow($tzid);
 		$now = \time() + $dt->getTimezone()->getOffset($dt);
 
-		return \mktime(0, 0, 0, \date('m', $now), \date('d', $now), \date('Y', $now)) <
-							 \mktime(0, 0, 0, \date('m', $date), \date('d', $date), \date('Y', $date));
+		return \mktime(0, 0, 0, (int)\date('m', $now), (int)\date('d', $now), (int)\date('Y', $now)) <
+							 \mktime(0, 0, 0, (int)\date('m', $date), (int)\date('d', $date), (int)\date('Y', $date));
 		}
 
 	/**
@@ -383,8 +380,8 @@ class ZDateHelper
 		$dt = self::DTNow($tzid);
 		$now = \time() + $dt->getTimezone()->getOffset($dt);
 
-		return \mktime(0, 0, 0, \date('m', $now), \date('d', $now), \date('Y', $now)) >
-							 \mktime(0, 0, 0, \date('m', $date), \date('d', $date), \date('Y', $date));
+		return \mktime(0, 0, 0, (int)\date('m', $now), (int)\date('d', $now), (int)\date('Y', $now)) >
+							 \mktime(0, 0, 0, (int)\date('m', $date), (int)\date('d', $date), (int)\date('Y', $date));
 		}
 
 	/**
@@ -589,9 +586,9 @@ class ZDateHelper
 	 */
 	public static function toUnixDate(string $datetime) : int
 		{
-		$year = \substr($datetime, 0, 4);
-		$month = \substr($datetime, 5, 2);
-		$day = \substr($datetime, 8, 2);
+		$year = (int)\substr($datetime, 0, 4);
+		$month = (int)\substr($datetime, 5, 2);
+		$day = (int)\substr($datetime, 8, 2);
 
 		return \mktime(0, 0, 0, $month, $day, $year);
 		}
@@ -607,18 +604,18 @@ class ZDateHelper
 		{
 		// convert to absolute dates if neccessary
 		$datetime = self::getAbsDate($datetime);
-		$year = \substr($datetime, 0, 4);
-		$month = \substr($datetime, 5, 2);
-		$day = \substr($datetime, 8, 2);
+		$year = (int)\substr($datetime, 0, 4);
+		$month = (int)\substr($datetime, 5, 2);
+		$day = (int)\substr($datetime, 8, 2);
 		$hour = 0;
 		$minute = 0;
 		$second = 0;
 
 		if (\strlen($datetime) > 10)
 			{
-			$hour = \substr($datetime, 11, 2);
-			$minute = \substr($datetime, 14, 2);
-			$second = \substr($datetime, 17, 2);
+			$hour = (int)\substr($datetime, 11, 2);
+			$minute = (int)\substr($datetime, 14, 2);
+			$second = (int)\substr($datetime, 17, 2);
 			}
 
 		return \gmmktime($hour, $minute, $second, $month, $day, $year);

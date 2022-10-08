@@ -2,11 +2,10 @@
 /**
  * ical.php	create iCalendar data structure
  *
- * @package	ZapCalLib
  * @author	Dan Cogliano <http://zcontent.net>
  * @copyright   Copyright (C) 2006 - 2018 by Dan Cogliano
  * @license     GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
- * @link	http://icalendar.org/php-library.html
+ * @link http://phpfui.com/?n=ICalendarOrg
  */
 
 namespace ICalendarOrg;
@@ -25,55 +24,55 @@ class ZCiCalNode
 	/**
 	 * Array of children for this node
 	 *
+	 * @var array<ZCiCalNode> $child
 	 */
 	public array $child = [];
 
 	/**
 	 * Array of $data for this node
 	 *
+	 * @var array<string, mixed> $data
 	 */
 	public array $data = [];
 
 	/**
 	 * The name of the node
-	 *
 	 */
 	public string $name = '';
 
 	/**
 	 * Next sibling of this node
-	 *
-	 * @var object
 	 */
-	public $next = null;
+	public ?ZCiCalNode $next = null;
 
 	/**
 	 * The parent of this node
-	 *
-	 * @var object
 	 */
-	public $parentnode = null;
+	public ?ZCiCalNode $parentnode = null;
 
 	/**
 	 * Previous sibling of this node
-	 *
-	 * @var object
 	 */
-	public $prev = null;
+	public ?ZCiCalNode $prev = null;
+
+	/**
+	 * @var array<int, string> Array of attributes for this node
+	 */
+	protected array $attrib = [];
 
 	/**
 	 * Create ZCiCalNode
 	 *
 	 * @param string $_name Name of node
-	 * @param object $_parent Parent node for this node
+	 * @param ?ZCiCalNode $_parent Parent node for this node
 	 * @param bool $first Is this the first child for this parent?
 	 */
-	public function __construct(string $_name, $_parent, bool $first = false)
+	public function __construct(string $_name, ?ZCiCalNode $_parent, bool $first = false)
 		{
 		$this->name = $_name;
 		$this->parentnode = $_parent;
 
-		if (null != $_parent)
+		if (null !== $_parent)
 			{
 			if (\count($this->parentnode->child) > 0)
 				{
@@ -104,12 +103,8 @@ class ZCiCalNode
 
 	/**
 	 * Add node to list
-	 *
-	 * @param object $node
-	 *
-	 * @return ZCiCalNode
 	 */
-	public function addNode($node)
+	public function addNode(ZCiCalNode $node) : ZCiCalNode
 		{
 		if (\array_key_exists($node->getName(), $this->data))
 			{
@@ -130,17 +125,18 @@ class ZCiCalNode
 	/**
 	 * export tree to icalendar format
 	 *
-	 * @param object $node Top level node to export
+	 * @param ?ZCiCalNode $node Top level node to export
 	 * @param int $level Level of recursion (usually leave this blank)
 	 *
-	 * @throws Exception
+	 * @throws \Exception
 	 * @return string iCalendar formatted output
+	 *
 	 */
-	public function export($node = null, int $level = 0)
+	public function export(?ZCiCalNode $node = null, int $level = 0) : string
 		{
 		$txtstr = '';
 
-		if (null == $node)
+		if (null === $node)
 			{
 			$node = $this;
 			}
@@ -160,7 +156,6 @@ class ZCiCalNode
 					{
 					foreach ($d as $c)
 						{
-						//$txtstr .= $node->export($c,$level + 1);
 						$p = '';
 						$params = @$c->getParameters();
 
@@ -217,17 +212,17 @@ class ZCiCalNode
 	/**
 	 * Get the first child of this object
 	 *
-	 * @return object|null The first child
+	 * @return ?ZCiCalNode The first child
 	 *
 	 */
-	public function getFirstChild()
+	public function getFirstChild() : ?ZCiCalNode
 		{
 		if (\count($this->child) > 0)
 			{
 			return $this->child[0];
 			}
 
-
+		return null;
 		}
 
 	/**
@@ -242,9 +237,9 @@ class ZCiCalNode
 	/**
 	 * Get the parent object of this object
 	 *
-	 * @return object parent of this object
+	 * @return ?ZCiCalNode parent of this object
 	 */
-	public function getParent()
+	public function getParent() : ?ZCiCalNode
 		{
 		return $this->parentnode;
 		}
@@ -252,11 +247,11 @@ class ZCiCalNode
 	/**
 	 * print an attribute line
 	 *
-	 * @param object $d attributes
-	 * @param object $p properties
+	 * @param ZCiCalDataNode $d attributes
+	 * @param string $p properties
 	 *
 	 */
-	public function printDataLine($d, $p) : string
+	public function printDataLine(ZCiCalDataNode $d, string $p) : string
 		{
 		$txtstr = '';
 
@@ -291,17 +286,17 @@ class ZCiCalNode
 	/**
 	 * Print object tree in HTML for debugging purposes
 	 *
-	 * @param object $node select part of tree to print, or leave blank for full tree
+	 * @param ?ZCiCalNode $node select part of tree to print, or leave blank for full tree
 	 * @param int $level Level of recursion (usually leave this blank)
 	 *
 	 * @return string - HTML formatted display of object tree
 	 */
-	public function printTree($node = null, int $level = 1) : string
+	public function printTree(?ZCiCalNode $node = null, int $level = 1) : string
 		{
 		$level += 1;
 		$html = '';
 
-		if (null == $node)
+		if (null === $node)
 			{
 			$node = $this->parentnode;
 			}
@@ -332,9 +327,8 @@ class ZCiCalNode
 	 *
 	 * @param string $value value of attribute to set
 	 *
-	 * @return ZCiCalNode
 	 */
-	public function setAttrib(string $value) : \ICalendarOrg\ZCiCalNode
+	public function setAttrib(string $value) : ZCiCalNode
 		{
 		$this->attrib[] = $value;
 

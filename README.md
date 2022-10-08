@@ -1,4 +1,4 @@
-# Zap Calendar iCalendar Library [![Tests](https://github.com/phpfui/icalendar/actions/workflows/tests.yml/badge.svg)](https://github.com/phpfui/icalendar/actions?query=workflow%3Atests) [![Latest Packagist release](https://img.shields.io/packagist/v/phpfui/icalendar.svg)](https://packagist.org/packages/phpfui/icalendar)
+# Zap Calendar iCalendar Library [![Tests](https://github.com/phpfui/icalendar/actions/workflows/tests.yml/badge.svg)](https://github.com/phpfui/icalendar/actions?query=workflow%3Atests) [![Latest Packagist release](https://img.shields.io/packagist/v/phpfui/icalendar.svg)](https://packagist.org/packages/phpfui/icalendar) ![](https://img.shields.io/badge/PHPStan-level%206-brightgreen.svg?style=flat)
 
 ## A modern 7.4 namespaced fork of [Zap Calendar iCalendar Library](https://github.com/zcontent/icalendar)
 

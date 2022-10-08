@@ -5,7 +5,8 @@
     "keywords": [ "rfc2445",
                   "rfc5545",
                   "rfc6321",
-                  "management",
+									"management",
+								  "icalendar",
                   "calendar",
                   "vCalendar",
                   "vevent",
@@ -34,6 +35,7 @@
 		},
 		"require-dev": {
         "phpunit/phpunit": "^8.4 | ^9.0",
-        "friendsofphp/php-cs-fixer": "^3.3"
+        "friendsofphp/php-cs-fixer": "^3.3",
+        "phpstan/phpstan": "^1.8"
     }
 }

@@ -2,11 +2,10 @@
 /**
  * timezone.php - create timezone data for use in icalendar file
  *
- * @package	ZapCalLib
  * @author	Dan Cogliano <http://zcontent.net>
  * @copyright   Copyright (C) 2006 - 2018 by Dan Cogliano
  * @license     GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
- * @link	http://icalendar.org/php-library.html
+ * @link http://phpfui.com/?n=ICalendarOrg
  */
 
 namespace ICalendarOrg;
@@ -21,27 +20,20 @@ class ZCTimeZoneHelper
 	/**
 	 * getTZNode creates VTIMEZONE section in an iCalendar file
 	 *
-	 * @param @startyear int start year of date range
-	 * @param @endyear int end year of date range
-	 * @param $tzid string PHP timezone, use underscore for multiple words (i.e. 'New_York' for 'New York')
+	 * @param int $startyear int start year of date range
+	 * @param int $endyear int end year of date range
+	 * @param string $tzid string PHP timezone, use underscore for multiple words (i.e. 'New_York' for 'New York')
 	 * @param $parentnode object iCalendar object where VTIMEZONE will be created
 	 *
-	 * @return object return VTIMEZONE object
+	 * @return \ICalendarOrg\ZCiCalNode VTIMEZONE object
 	 */
-	public static function getTZNode(int $startyear, int $endyear, string $tzid, $parentnode) : \ICalendarOrg\ZCiCalNode
+	public static function getTZNode(int $startyear, int $endyear, string $tzid, ?ZCiCalNode $parentnode) : \ICalendarOrg\ZCiCalNode
 		{
 		$tzmins = [];
 		$tzmaxs = [];
 
-		if (! \array_key_exists($tzid, $tzmins) || $tzmins[$tzid] > $startyear)
-			{
-			$tzmins[$tzid] = $startyear;
-			}
-
-		if (! \array_key_exists($tzid, $tzmaxs) || $tzmaxs[$tzid] < $endyear)
-			{
-			$tzmaxs[$tzid] = $endyear;
-			}
+		$tzmins[$tzid] = $startyear;
+		$tzmaxs[$tzid] = $endyear;
 
 		foreach (\array_keys($tzmins)as $tzid)
 			{
