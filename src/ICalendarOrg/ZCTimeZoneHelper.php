@@ -1,6 +1,6 @@
 <?php
 /**
- * timezone.php - create timezone data for use in icalendar file
+ * Create timezone data for use in icalendar file
  *
  * @author	Dan Cogliano <http://zcontent.net>
  * @copyright   Copyright (C) 2006 - 2018 by Dan Cogliano

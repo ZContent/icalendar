@@ -1,6 +1,6 @@
 <?php
 /**
- * recurringdate.php - create list of dates from recurring rule
+ * Create list of dates from recurring rule
  *
  * @author	Dan Cogliano <http://zcontent.net>
  * @copyright   Copyright (C) 2006 - 2018 by Dan Cogliano

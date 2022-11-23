@@ -1,6 +1,6 @@
 <?php
 /**
- * ical.php	create iCalendar data structure
+ * Create iCalendar data structure
  *
  * @author	Dan Cogliano <http://zcontent.net>
  * @copyright   Copyright (C) 2006 - 2018 by Dan Cogliano
