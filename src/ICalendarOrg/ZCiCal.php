@@ -38,16 +38,12 @@ class ZCiCal
 	 */
 	public function __construct(string $data = '', int $maxevents = 1000000, int $startevent = 0)
 		{
+
 		if ('' != $data)
 			{
 			// unfold lines
 			// first change all eol chars to "\n"
-			$data = \str_replace(["\r\n", "\n\r", "\n", "\r"], "\n", $data);
-			// now unfold lines
-			//$data = str_replace(array("\n ", "\n	"),"!?", $data);
-			$data = \str_replace(["\n ", "\n	"], '', $data);
-			// replace special iCal chars
-			$data = \str_replace(['\\\\', "\,", "\;"], ['\\', ',', ';'], $data);
+			$data = \str_replace(["\r\n", "\n\r", "\r"], "\n", $data);
 
 			// parse each line
 			$lines = \explode("\n", $data);
@@ -136,7 +132,7 @@ class ZCiCal
 									}
 								else
 									{
-									$this->curnode->data[$datanode->getName()]->value[] = $datanode->value[0];
+									$this->curnode->data[$datanode->getName()]->values[] = $datanode->values[0];
 									}
 								}
 							else
@@ -147,9 +143,12 @@ class ZCiCal
 									}
 								else
 									{
-									$tnode = $this->curnode->data[$datanode->getName()];
-									$this->curnode->data[$datanode->getName()] = [];
-									$this->curnode->data[$datanode->getName()][] = $tnode;
+									if (! \is_array($this->curnode->data[$datanode->getName()]))
+										{
+										$tnode = $this->curnode->data[$datanode->getName()];
+										$this->curnode->data[$datanode->getName()] = [];
+										$this->curnode->data[$datanode->getName()][] = $tnode;
+										}
 									$this->curnode->data[$datanode->getName()][] = $datanode;
 									}
 								}
@@ -165,7 +164,7 @@ class ZCiCal
 								}
 							else
 								{
-								$this->curnode->data[$datanode->getName()]->value[] = $datanode->value[0];
+								$this->curnode->data[$datanode->getName()]->values[] = $datanode->values[0];
 								}
 							}
 						else
@@ -176,9 +175,12 @@ class ZCiCal
 								}
 							else
 								{
-								$tnode = $this->curnode->data[$datanode->getName()];
-								$this->curnode->data[$datanode->getName()] = [];
-								$this->curnode->data[$datanode->getName()][] = $tnode;
+								if (! \is_array($this->curnode->data[$datanode->getName()]))
+									{
+									$tnode = $this->curnode->data[$datanode->getName()];
+									$this->curnode->data[$datanode->getName()] = [];
+									$this->curnode->data[$datanode->getName()][] = $tnode;
+									}
 								$this->curnode->data[$datanode->getName()][] = $datanode;
 								}
 							}

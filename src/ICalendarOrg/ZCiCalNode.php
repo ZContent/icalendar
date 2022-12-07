@@ -146,7 +146,7 @@ class ZCiCalNode
 			//die("levels nested too deep<br/>\n");
 			throw new \Exception('levels nested too deep');
 			}
-		$txtstr .= 'BEGIN:' . $node->getName() . "\r\n";
+		$txtstr .= 'BEGIN:' . $node->getName() . "\n";
 
 		if (\property_exists($node, 'data'))
 			{
@@ -156,32 +156,12 @@ class ZCiCalNode
 					{
 					foreach ($d as $c)
 						{
-						$p = '';
-						$params = @$c->getParameters();
-
-						if (\count($params) > 0)
-							{
-							foreach ($params as $key => $value)
-								{
-								$p .= ';' . \strtoupper($key) . '=' . $value;
-								}
-							}
-						$txtstr .= $this->printDataLine($c, $p);
+						$txtstr .= $c;
 						}
 					}
 				else
 					{
-					$p = '';
-					$params = @$d->getParameters();
-
-					if (\count($params) > 0)
-						{
-						foreach ($params as $key => $value)
-							{
-							$p .= ';' . \strtoupper($key) . '=' . $value;
-							}
-						}
-					$txtstr .= $this->printDataLine($d, $p);
+					$txtstr .= $d;
 					}
 				}
 			}
@@ -193,7 +173,7 @@ class ZCiCalNode
 				$txtstr .= $node->export($c, $level + 1);
 				}
 			}
-		$txtstr .= 'END:' . $node->getName() . "\r\n";
+		$txtstr .= 'END:' . $node->getName() . "\n";
 
 		return $txtstr;
 		}
@@ -253,34 +233,7 @@ class ZCiCalNode
 	 */
 	public function printDataLine(ZCiCalDataNode $d, string $p) : string
 		{
-		$txtstr = '';
-
-		$values = $d->getValues();
-		// don't think we need this, Sunbird does not like it in the EXDATE field
-		//$values = str_replace(',', "\\,", $values);
-
-		$line = $d->getName() . $p . ':' . $values;
-		$line = \str_replace(['<br>', '<BR>', '<br/>', '<BR/'], '\\n', $line);
-		$line = \str_replace(["\r\n", "\n\r", "\n", "\r"], '\n', $line);
-		//$line = str_replace(array(',',';','\\'), array('\\,','\\;','\\\\'),$line);
-		//$line =strip_tags($line);
-		$linecount = 0;
-
-		while (\strlen($line) > 0)
-			{
-			$linewidth = (0 == $linecount ? 75 : 74);
-			$linesize = (\strlen($line) > $linewidth ? $linewidth : \strlen($line));
-
-			if ($linecount > 0)
-				{
-				$txtstr .= ' ';
-				}
-			$txtstr .= \substr($line, 0, $linesize) . "\r\n";
-			$linecount += 1;
-			$line = \substr($line, $linewidth);
-			}
-
-		return $txtstr;
+		return "{$d}";
 		}
 
 	/**
