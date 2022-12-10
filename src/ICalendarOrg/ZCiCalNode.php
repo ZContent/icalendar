@@ -104,7 +104,7 @@ class ZCiCalNode
 	/**
 	 * Add node to list
 	 */
-	public function addNode(ZCiCalNode $node) : ZCiCalNode
+	public function addNode(ZCiCalDataNode $node) : ZCiCalNode
 		{
 		if (\array_key_exists($node->getName(), $this->data))
 			{
